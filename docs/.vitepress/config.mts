@@ -1,8 +1,7 @@
 import path, { dirname } from 'node:path'
 import process from 'node:process'
-import { codeInspectorPlugin } from 'code-inspector-plugin'
 import { defineConfig } from 'vitepress'
-import { vitepressDemoPlugin } from 'vitepress-demo-plugin'
+import { vitepressDemoPlugin } from 'vitepress-ep-demo-plugin'
 
 function fileURLToPath(fileURL: string) {
   let filePath = fileURL
@@ -164,12 +163,5 @@ export default defineConfig({
         wrapperComponentName: 'vitepress-ep-demo-box',
       })
     },
-  },
-  vite: {
-    plugins: [
-      codeInspectorPlugin({
-        bundler: 'vite',
-      }),
-    ],
   },
 })

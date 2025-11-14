@@ -13,6 +13,7 @@
     "postcss": "^8.4.49",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "sass-embedded": "^1.66.1",
     "vitepress": "^1.6.3",
     "vitepress-ep-demo-plugin": "workspace:^",
     "vue": "^3.3.4"

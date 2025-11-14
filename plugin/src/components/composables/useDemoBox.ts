@@ -1,4 +1,4 @@
-import type { Platform } from '@/markdown/preview'
+import type { Platform } from '../../markdown/preview'
 import {
   computed,
   nextTick,
@@ -7,8 +7,8 @@ import {
   ref,
   watch,
 } from 'vue'
-import { ComponentType } from '@/constant/type'
-import { initI18nData, observeI18n, unobserveI18n } from '@/locales/i18n'
+import { ComponentType } from '../../constant/type'
+import { initI18nData, observeI18n, unobserveI18n } from '../../locales/i18n'
 import { useCodeCopy } from '../utils/copy'
 import { useCodeFold } from '../utils/fold'
 import { genHtmlCode } from '../utils/template'

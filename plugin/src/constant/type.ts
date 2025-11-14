@@ -1,13 +1,13 @@
-export const ComponentType = {
-  VUE: 'vue',
-  REACT: 'react',
-  HTML: 'html',
-} as const
+export enum ComponentType {
+  VUE = 'vue',
+  REACT = 'react',
+  HTML = 'html',
+}
 
-export const PlatformType = {
-  STACKBLITZ: 'stackblitz',
-  CODESANDBOX: 'codesandbox',
-} as const
+export enum PlatformType {
+  STACKBLITZ = 'stackblitz',
+  CODESANDBOX = 'codesandbox',
+}
 
 export interface PlatformTemplate {
   scope: 'global' | 'vue' | 'react' | 'html' | string
@@ -18,8 +18,8 @@ export interface PlatformParams {
   title?: string
   description?: string
   code: string
-  type?: typeof ComponentType[keyof typeof ComponentType]
-  platform?: typeof PlatformType[keyof typeof PlatformType]
+  type?: ComponentType
+  platform?: PlatformType
   templates?: PlatformTemplate[]
   scope?: string
   customFiles?: Record<string, string> | Record<string, { content: string }>
