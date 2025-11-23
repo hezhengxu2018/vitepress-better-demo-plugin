@@ -1,9 +1,8 @@
+import type { VitepressDemoBoxConfig } from 'vitepress-ep-demo-plugin'
 import path, { dirname } from 'node:path'
 import process from 'node:process'
 import { defineConfig } from 'vitepress'
 import { vitepressDemoPlugin } from 'vitepress-ep-demo-plugin'
-
-type VitepressDemoBoxConfig = Parameters<typeof vitepressDemoPlugin>[1]
 
 function fileURLToPath(fileURL: string) {
   let filePath = fileURL

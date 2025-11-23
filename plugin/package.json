@@ -31,6 +31,7 @@
       "import": "./dist/theme/element-plus/style.css"
     }
   },
+  "types": "./dist/markdown/index.d.ts",
   "files": [
     "dist",
     "src"
