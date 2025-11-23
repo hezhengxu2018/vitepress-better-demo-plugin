@@ -4,18 +4,6 @@
 
 选择你喜欢的包管理器进行安装：
 
-```bash
-npm install vitepress-demo-plugin -D
-```
-
-```bash
-yarn add vitepress-demo-plugin -D
-```
-
-```bash
-pnpm add vitepress-demo-plugin -D
-```
-
 ## 引入插件
 
 在 `.vitepress/config.ts` 中添加如下代码以引入 `vitepressDemoPlugin` 插件：
@@ -67,6 +55,7 @@ export default defineConfig({
 ```bash
 npm install react react-dom -D
 ```
+
 :::
 
 通过 `<demo react="xxx/path" />` 指定一个 `.jsx/.tsx` 文件的路径，渲染该 react 组件并展示其代码：

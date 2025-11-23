@@ -19,23 +19,40 @@ const stackblitzRegex = /stackblitz(?:=|\s+)(?<value>"[^"]*"|'[^']*'|[^\s"'>]+)/
 const codesandboxRegex = /codesandbox(?:=|\s+)(?<value>"[^"]*"|'[^']*'|[^\s"'>]+)/
 const codeplayerRegex = /codeplayer(?:=|\s+)(?<value>"[^"]*"|'[^']*'|[^\s"'>]+)/
 const scopeRegex = /scope(?:=|\s+)(?<value>"[^"]*"|'[^']*'|[^\s"'>]+)/
+const ssgRegex = /ssg(?:=|\s+)(?<value>"[^"]*"|'[^']*'|[^\s"'>]+)/
+const htmlWriteWayRegex = /htmlWriteWay(?:=|\s+)(?<value>"[^"]*"|'[^']*'|[^\s"'>]+)/
+const backgroundRegex = /background(?:=|\s+)(?<value>"[^"]*"|'[^']*'|[^\s"'>]+)/
+const wrapperComponentNameRegex = /wrapperComponentName(?:=|\s+)(?<value>"[^"]*"|'[^']*'|[^\s"'>]+)/
 // 保持 files 的正则组结构，仅允许 = 或 空格 分割；把整体值放到命名捕获组 value 中（包含两侧引号）
 const vueFilesRegex = /vueFiles(?:=|\s+)(?<value>"(?:\{(?:.|\n)*?\}|\[(?:.|\n)*?\])")/
 const reactFilesRegex = /reactFiles(?:=|\s+)(?<value>"(?:\{(?:.|\n)*?\}|\[(?:.|\n)*?\])")/
 const htmlFilesRegex = /htmlFiles(?:=|\s+)(?<value>"(?:\{(?:.|\n)*?\}|\[(?:.|\n)*?\])")/
-const ssgRegex = /ssg(?:=|\s+)(?<value>"[^"]*"|'[^']*'|[^\s"'>]+)/
-const htmlWriteWayRegex = /htmlWriteWay(?:=|\s+)(?<value>"[^"]*"|'[^']*'|[^\s"'>]+)/
-const backgroundRegex = /background(?:=|\s+)(?<value>"[^"]*"|'[^']*'|[^\s"'>]+)/
 
-function getGroupValue(m: RegExpMatchArray | null) {
+/**
+ * 从内容中使用正则提取命名捕获组 `value` 的值并去除外层引号，支持默认值
+ * @param content 待匹配的字符串
+ * @param regex 包含命名捕获组 `value` 的正则
+ * @param defaultValue 匹配不到时的默认值
+ */
+function extractValue(content: string, regex: RegExp, defaultValue = ''): string {
+  const m = content.match(regex)
   const raw = m?.groups?.value ?? ''
   if (!raw)
-    return ''
+    return defaultValue
   const first = raw[0]
   const last = raw[raw.length - 1]
+  let val = raw
   if ((first === '"' && last === '"') || (first === '\'' && last === '\''))
-    return raw.slice(1, -1)
-  return raw
+    val = raw.slice(1, -1)
+  return val || defaultValue
+}
+
+/**
+ * 解析布尔型开关（例如 ssg），当匹配到且不为 'false' 时视为 true
+ */
+function extractFlag(content: string, regex: RegExp): boolean {
+  const v = extractValue(content, regex)
+  return v !== '' && v !== 'false'
 }
 
 /**
@@ -54,6 +71,7 @@ export function transformPreview(md: MarkdownIt, token: Token, mdFile: any, conf
     codesandbox = { show: false },
     codeplayer = { show: false },
     wrapperComponentName = 'vitepress-ep-demo-box',
+    autoImportWrapper = true,
   } = config || {}
   let {
     order = 'vue,react,html',
@@ -70,41 +88,27 @@ export function transformPreview(md: MarkdownIt, token: Token, mdFile: any, conf
   }
 
   // 获取Props相关参数（先匹配再提取值，兼容 key="value" 与 key value）
-  const titleMatch = token.content.match(titleRegex)
-  const vuePathMatch = token.content.match(vuePathRegex)
-  const htmlPathMatch = token.content.match(htmlPathRegex)
-  const reactPathMatch = token.content.match(reactPathRegex)
-  const descriptionMatch = token.content.match(descriptionRegex)
-  const orderMatch = token.content.match(orderRegex)
-  const selectMatch = token.content.match(selectRegex)
-  const githubMatch = token.content.match(githubRegex)
-  const gitlabMatch = token.content.match(gitlabRegex)
-  const stackblitzMatch = token.content.match(stackblitzRegex)
-  const codesandboxMatch = token.content.match(codesandboxRegex)
-  const codeplayerMatch = token.content.match(codeplayerRegex)
-  const scopeValue = getGroupValue(token.content.match(scopeRegex)) || ''
-  const vueFilesMatch = token.content.match(vueFilesRegex)
-  const reactFilesMatch = token.content.match(reactFilesRegex)
-  const htmlFilesMatch = token.content.match(htmlFilesRegex)
-  const ssgValue = !!getGroupValue(token.content.match(ssgRegex))
-  const htmlWriteWayValue = getGroupValue(token.content.match(htmlWriteWayRegex)) || 'write'
-  const backgroundValue = getGroupValue(token.content.match(backgroundRegex))
-
-  const titleValue = getGroupValue(titleMatch)
-  const vuePathValue = getGroupValue(vuePathMatch)
-  const htmlPathValue = getGroupValue(htmlPathMatch)
-  const reactPathValue = getGroupValue(reactPathMatch)
-  const descriptionValue = getGroupValue(descriptionMatch)
-  const orderValue = getGroupValue(orderMatch)
-  const selectValue = getGroupValue(selectMatch)
-  const githubValue = getGroupValue(githubMatch)
-  const gitlabValue = getGroupValue(gitlabMatch)
-  const stackblitzValue = getGroupValue(stackblitzMatch)
-  const codesandboxValue = getGroupValue(codesandboxMatch)
-  const codeplayerValue = getGroupValue(codeplayerMatch)
-  const vueFilesValue = getGroupValue(vueFilesMatch)
-  const reactFilesValue = getGroupValue(reactFilesMatch)
-  const htmlFilesValue = getGroupValue(htmlFilesMatch)
+  const titleValue = extractValue(token.content, titleRegex)
+  const vuePathValue = extractValue(token.content, vuePathRegex)
+  const htmlPathValue = extractValue(token.content, htmlPathRegex)
+  const reactPathValue = extractValue(token.content, reactPathRegex)
+  const descriptionValue = extractValue(token.content, descriptionRegex)
+  const orderValue = extractValue(token.content, orderRegex)
+  const selectValue = extractValue(token.content, selectRegex)
+  const githubValue = extractValue(token.content, githubRegex)
+  const gitlabValue = extractValue(token.content, gitlabRegex)
+  const stackblitzValue = extractValue(token.content, stackblitzRegex)
+  const codesandboxValue = extractValue(token.content, codesandboxRegex)
+  const codeplayerValue = extractValue(token.content, codeplayerRegex)
+  const vueFilesValue = extractValue(token.content, vueFilesRegex)
+  const reactFilesValue = extractValue(token.content, reactFilesRegex)
+  const htmlFilesValue = extractValue(token.content, htmlFilesRegex)
+  const wrapperComponentNameValue = extractValue(token.content, wrapperComponentNameRegex)
+  const wrapperName = wrapperComponentNameValue || wrapperComponentName
+  const scopeValue = extractValue(token.content, scopeRegex) || ''
+  const ssgValue = extractFlag(token.content, ssgRegex)
+  const htmlWriteWayValue = extractValue(token.content, htmlWriteWayRegex, 'write')
+  const backgroundValue = extractValue(token.content, backgroundRegex)
   const mdFilePath = mdFile.realPath ?? mdFile.path
   const dirPath = demoDir || path.dirname(mdFilePath)
 
@@ -189,13 +193,16 @@ export function transformPreview(md: MarkdownIt, token: Token, mdFile: any, conf
   const componentName = composeComponentName(absolutePath)
   const reactComponentName = `react${componentName}`
 
-  // 注入 vitepress-demo-plugin 组件和样式
-  injectComponentImportScript(
-    mdFile,
-    'vitepress-ep-demo-plugin/theme',
-    `{ VitepressDemoPlaceholder, VitepressEpDemoBox }`,
-  )
-  injectComponentImportScript(mdFile, 'vitepress-ep-demo-plugin/theme/styles')
+  // 启用自动导入包装组件
+  if (autoImportWrapper) {
+    injectComponentImportScript(
+      mdFile,
+      'vitepress-ep-demo-plugin/theme/element-plus',
+      `{ VitepressDemoPlaceholder }`,
+    )
+    injectComponentImportScript(mdFile, 'vitepress-ep-demo-plugin/theme/element-plus/style')
+  }
+
   injectComponentImportScript(mdFile, 'vue', '{ ref, shallowRef, onMounted }')
 
   // 注入组件导入语句
@@ -450,7 +457,7 @@ export function transformPreview(md: MarkdownIt, token: Token, mdFile: any, conf
       : `<vitepress-demo-placeholder v-show="${placeholderVisibleKey}" />`
   }
   ${ssgValue ? '' : '<ClientOnly>'}
-    <${wrapperComponentName}
+    <${wrapperName}
       title="${componentProps.title}"
       description="${componentProps.description}"
       locale="${locale}"
@@ -505,7 +512,7 @@ export function transformPreview(md: MarkdownIt, token: Token, mdFile: any, conf
             `
           : ''
       }
-    </${wrapperComponentName}>
+    </${wrapperName}>
   ${ssgValue ? '' : '</ClientOnly>'}`.trim()
 
   return sourceCode

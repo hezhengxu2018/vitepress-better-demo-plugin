@@ -1,5 +1,5 @@
 import type { PlatformParams } from '@/types'
-import { COMPONENT_TYPE } from '@/theme-shared/constant'
+import { COMPONENT_TYPE } from '@/shared/constant'
 import { getHtmlCodeSandboxParams } from './html'
 import { getReactCodeSandboxParams } from './react'
 import { getVueCodeSandboxParams } from './vue'

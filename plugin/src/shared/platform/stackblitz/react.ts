@@ -1,6 +1,6 @@
 import type { PlatformParams } from '@/types'
 import stackblitz from '@stackblitz/sdk'
-import { COMPONENT_TYPE, PLATFORM_TYPE } from '@/theme-shared/constant'
+import { COMPONENT_TYPE, PLATFORM_TYPE } from '@/shared/constant'
 import {
   genHtmlTemplate,
   genMainTs,

@@ -21,7 +21,7 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/index.js"
+      "import": "./dist/markdown/index.js"
     },
     "./theme/element-plus": {
       "import": "./dist/theme/element-plus/index.js"
@@ -33,12 +33,13 @@
   "types": "./dist/index.d.ts",
   "files": [
     "dist",
-    "src"
+    "src",
+    "theme"
   ],
   "scripts": {
     "build:plugin": "vite build -c ./vite.plugin.config.ts",
+    "build:theme": "vite build -c ./vite.theme.config.ts",
     "dev": "vite build --watch",
-    "dev:theme-ep": "vite build --mode theme-ep --watch",
     "release": "pnpm build && vr release --skip-changelog"
   },
   "peerDependencies": {

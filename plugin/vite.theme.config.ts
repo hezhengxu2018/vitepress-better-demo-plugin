@@ -6,9 +6,8 @@ import { DEFAULT_NAMESPACE, EP_NAMESPACE } from './src/shared/constant/style-pre
 const themes = ['element-plus']
 
 const entries = {
-  index: resolve(__dirname, 'src/index.ts'),
   ...Object.fromEntries(
-    themes.map(name => [name, resolve(__dirname, `src/components/${name}/index.ts`)]),
+    themes.map(name => [name, resolve(__dirname, `src/theme/${name}/index.ts`)]),
   ),
 }
 
@@ -23,29 +22,26 @@ export default defineConfig({
   plugins: [vue()],
   resolve: { alias: { '@': resolve(__dirname, 'src') } },
   build: {
-    outDir: 'dist',
+    outDir: 'dist/theme',
     emptyOutDir: true,
     lib: {
       entry: entries,
       formats: ['es'],
       // 入口 JS 路径按名字映射
-      fileName: (_fmt, name) => (name === 'index'
-        ? 'index.js'
-        : `theme/${name}/index.js`),
+      fileName: (_fmt, name) => `${name}/index.js`,
     },
     rollupOptions: {
       external: ['vue', 'vitepress', /^vitepress\/.*/, 'element-plus', 'node:fs', 'node:path'],
       output: {
         exports: 'named',
-        chunkFileNames: (chunkInfo) => {
-          console.log(chunkInfo)
-          return 'shared/[name]-[hash].js'
-        },
         assetFileNames: (asset) => {
-          const name = asset.name || ''
-          if (name.includes('element-plus'))
-            return 'theme/element-plus/[name][extname]'
-          return 'theme/element-plus/style[extname]' // 默认+核心 CSS
+          const name = asset.names[0] || ''
+          for (const theme of themes) {
+            if (name.includes(theme)) {
+              return `${theme}/style[extname]`
+            }
+          }
+          return `element-plus/style[extname]` // 默认+核心 CSS
         },
       },
     },

@@ -1,8 +1,9 @@
-import { ComponentType } from '@/shared/constant'
+import type { ComponentType } from '@/types'
+import { COMPONENT_TYPE } from '@/shared/constant'
 
 export function genTsConfig(type?: ComponentType): string {
   const additions: Record<string, any> = {}
-  if (type === ComponentType.REACT) {
+  if (type === COMPONENT_TYPE.REACT) {
     additions.jsx = 'react'
   }
   const content = JSON.stringify(

@@ -162,8 +162,13 @@ export interface VitepressDemoBoxConfig {
    */
   locale?: Locale
   /**
-   * @cn 自定义包裹组件的组件名称，需自行注册
-   * @en The custom component name of the preview component
+   * @cn 是否自动导入默认的包裹组件，如关闭则需自行注册包裹组件
+   * @en Whether to automatically import the default wrapper component. If closed, you need to register the wrapper component by yourself
+   */
+  autoImportWrapper?: boolean
+  /**
+   * @cn 自定义包裹组件的组件名称，需自行注册，仅在启用 isCustomWrapper 时有效
+   * @en The custom component name of the preview component， need to be registered by yourself, only valid when isCustomWrapper is enabled
    */
   wrapperComponentName?: string
 }

@@ -1,6 +1,6 @@
 import type { PlatformParams } from '@/types'
 import { getParameters } from 'codesandbox/lib/api/define'
-import { COMPONENT_TYPE, PLATFORM_TYPE } from '@/theme-shared/constant'
+import { COMPONENT_TYPE, PLATFORM_TYPE } from '@/shared/constant'
 import {
   genHtmlTemplate,
   genMainTs,

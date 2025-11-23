@@ -1,5 +1,5 @@
 import type { PlatformParams } from '@/types'
-import { COMPONENT_TYPE } from '@/theme-shared/constant'
+import { COMPONENT_TYPE } from '@/shared/constant'
 import { openHtmlStackblitz } from './html'
 import { openReactStackblitz } from './react'
 import { openVueStackblitz } from './vue'

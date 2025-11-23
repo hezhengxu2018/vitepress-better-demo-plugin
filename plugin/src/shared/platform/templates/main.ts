@@ -1,4 +1,5 @@
-import { ComponentType } from '@/shared/constant'
+import type { ComponentType } from '@/types'
+import { COMPONENT_TYPE } from '@/shared/constant'
 
 const mainVue = `import { createApp } from "vue";
 import Demo from "./Demo.vue";
@@ -16,11 +17,11 @@ root.render(<Demo />);
 `
 
 export function genMainTs(type: ComponentType): string {
-  if (type === ComponentType.VUE) {
+  if (type === COMPONENT_TYPE.VUE) {
     return mainVue
   }
 
-  if (type === ComponentType.REACT) {
+  if (type === COMPONENT_TYPE.REACT) {
     return mainReact
   }
 

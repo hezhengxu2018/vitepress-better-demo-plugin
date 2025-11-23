@@ -10,7 +10,7 @@
     "@types/react-dom": "^18.3.0",
     "antd": "^5.21.2",
     "element-plus": "^2.8.4",
-    "postcss": "^8.4.49",
+    "posxtcss": "^8.4.49",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "sass-embedded": "^1.66.1",
