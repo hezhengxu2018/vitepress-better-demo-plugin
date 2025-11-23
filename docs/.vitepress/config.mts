@@ -3,6 +3,8 @@ import process from 'node:process'
 import { defineConfig } from 'vitepress'
 import { vitepressDemoPlugin } from 'vitepress-ep-demo-plugin'
 
+type VitepressDemoBoxConfig = Parameters<typeof vitepressDemoPlugin>[1]
+
 function fileURLToPath(fileURL: string) {
   let filePath = fileURL
   if (process.platform === 'win32') {
@@ -58,7 +60,7 @@ export default defineConfig({
   },
   markdown: {
     config(md) {
-      md.use(vitepressDemoPlugin, {
+      md.use<VitepressDemoBoxConfig>(vitepressDemoPlugin, {
         demoDir: path.resolve(
           dirname(fileURLToPath(import.meta.url)),
           '../demos',

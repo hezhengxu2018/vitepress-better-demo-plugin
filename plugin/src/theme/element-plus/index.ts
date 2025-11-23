@@ -1,4 +1,4 @@
 import VitepressEpDemoBox from './index.vue'
-import VitepressDemoPlaceholder from './placeholder.vue'
+import VitepressEpDemoPlaceholder from './placeholder.vue'
 
-export { VitepressDemoPlaceholder, VitepressEpDemoBox }
+export { VitepressEpDemoBox, VitepressEpDemoPlaceholder }

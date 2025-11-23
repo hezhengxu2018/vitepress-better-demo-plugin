@@ -1,3 +1,4 @@
+import type { MarkdownRenderer } from 'vitepress'
 import type { COMPONENT_TYPE, PLATFORM_TYPE } from '@/shared/constant'
 
 export interface LocaleText {
@@ -172,3 +173,5 @@ export interface VitepressDemoBoxConfig {
    */
   wrapperComponentName?: string
 }
+
+export type MarkdownRule = MarkdownRenderer['renderer']['rules']['html_inline']

@@ -1,6 +1,6 @@
-import type MarkdownIt from 'markdown-it'
 import type Token from 'markdown-it/lib/token'
-import type { DefaultProps, VitepressDemoBoxConfig } from '../types/index'
+import type { MarkdownRenderer } from 'vitepress'
+import type { DefaultProps, VitepressDemoBoxConfig } from '@/types'
 import fs from 'node:fs'
 import path from 'node:path'
 import { composeComponentName, injectComponentImportScript } from './utils'
@@ -63,7 +63,7 @@ function extractFlag(content: string, regex: RegExp): boolean {
  * @param config
  * @return string
  */
-export function transformPreview(md: MarkdownIt, token: Token, mdFile: any, config?: VitepressDemoBoxConfig) {
+export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any, config?: VitepressDemoBoxConfig) {
   const {
     demoDir,
     tab = {},
@@ -198,7 +198,7 @@ export function transformPreview(md: MarkdownIt, token: Token, mdFile: any, conf
     injectComponentImportScript(
       mdFile,
       'vitepress-ep-demo-plugin/theme/element-plus',
-      `{ VitepressDemoPlaceholder }`,
+      `{ VitepressEpDemoPlaceholder, VitepressEpDemoBox }`,
     )
     injectComponentImportScript(mdFile, 'vitepress-ep-demo-plugin/theme/element-plus/style')
   }
