@@ -59,6 +59,30 @@ const handleFileClick = (file: string) => {
 };
 
 const ns = useDefaultNameSpace();
+
+const cleanupSourceTransitionStyle = (el: Element) => {
+  const element = el as HTMLElement;
+  element.style.height = '';
+  element.style.transition = '';
+};
+
+const handleSourceEnter = (el: Element) => {
+  const element = el as HTMLElement;
+  element.style.height = '0px';
+  requestAnimationFrame(() => {
+    element.style.transition = 'height 1s ease';
+    element.style.height = `${element.scrollHeight}px`;
+  });
+};
+
+const handleSourceLeave = (el: Element) => {
+  const element = el as HTMLElement;
+  element.style.height = `${element.scrollHeight}px`;
+  requestAnimationFrame(() => {
+    element.style.transition = 'height 0.3s ease';
+    element.style.height = '0px';
+  });
+};
 </script>
 
 <template>
@@ -131,29 +155,36 @@ const ns = useDefaultNameSpace();
     </section>
 
     <!-- 代码展示区 -->
-    <section
-      :class="[ns.bem('source'), { 'is-expanded': !isCodeFold }]"
-      v-show="!isCodeFold"
+    <Transition
+      @enter="handleSourceEnter"
+      @after-enter="cleanupSourceTransitionStyle"
+      @leave="handleSourceLeave"
+      @after-leave="cleanupSourceTransitionStyle"
     >
-      <div
-        :class="[ns.bem('file-tabs')]"
-        v-if="Object.keys(currentFiles).length"
+      <section
+        v-show="!isCodeFold"
+        :class="[ns.bem('source'), { 'is-expanded': !isCodeFold }]"
       >
         <div
-          v-for="file in Object.keys(currentFiles)"
-          :key="file"
-          :class="[
-            ns.bem('tab'),
-            activeFile === file && ns.bem('active-tab'),
-          ]"
-          @click="handleFileClick(file)"
+          :class="[ns.bem('file-tabs')]"
+          v-if="Object.keys(currentFiles).length"
         >
-          {{ file }}
+          <div
+            v-for="file in Object.keys(currentFiles)"
+            :key="file"
+            :class="[
+              ns.bem('tab'),
+              activeFile === file && ns.bem('active-tab'),
+            ]"
+            @click="handleFileClick(file)"
+          >
+            {{ file }}
+          </div>
         </div>
-      </div>
-      <div v-if="currentCodeHtml" v-html="currentCodeHtml"></div>
-      <pre v-else class="language-plaintext"><code>{{ currentCode || '' }}</code></pre>
-    </section>
+        <div v-if="currentCodeHtml" v-html="currentCodeHtml"></div>
+        <pre v-else class="language-plaintext"><code>{{ currentCode || '' }}</code></pre>
+      </section>
+    </Transition>
 
     <div :class="ns.bem('fold')" v-if="!isCodeFold" @click="setCodeFold(true)">
       <FoldIcon />{{ i18n.collapseCode }}
@@ -164,8 +195,8 @@ const ns = useDefaultNameSpace();
 <style lang="scss">
 .#{$defaultPrefix}__container {
   div[class*='language-'] {
-    margin-top: 0;
-    margin-bottom: 0;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
   }
 
   .language-html {
@@ -182,6 +213,7 @@ const ns = useDefaultNameSpace();
 
   .#{$defaultPrefix}-source {
     width: 100%;
+    background-color: var(--vp-code-block-bg);
   }
 }
 

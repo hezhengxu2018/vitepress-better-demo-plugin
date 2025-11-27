@@ -17,13 +17,23 @@ const props = defineProps<{
 }>();
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
+:root {
+  --coot-demo-box-tooltip-bg: #000;
+  --coot-demo-box-tooltip-color: #fff;
+}
+
+.dark:root {
+  --coot-demo-box-tooltip-bg: #fff;
+  --coot-demo-box-tooltip-color: #000;
+}
+
 .#{$defaultPrefix}-tooltip__wrapper {
   position: relative;
   display: inline-block;
   &:hover {
     .#{$defaultPrefix}-tooltip__content {
-      display: block;
+      opacity: 1;
     }
   }
 }
@@ -35,9 +45,11 @@ const props = defineProps<{
   padding: 2px 8px;
   border-radius: 4px;
   white-space: nowrap;
-  background-color: var(--vp-c-bg-alt);
-  color: var(--vp-c-bg-alt);
+  background-color: var(--coot-demo-box-tooltip-bg);
+  color: var(--coot-demo-box-tooltip-color);
   transform: translate(-50%, -100%);
-  display: none;
+  opacity: 0;
+  font-size: 12px;
+  transition: opacity 0.2s ease-in-out;
 }
 </style>

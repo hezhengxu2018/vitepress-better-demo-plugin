@@ -60,7 +60,8 @@ defineExpose({
 .#{$defaultPrefix}-message-notice__container {
   display: flex;
   align-items: center;
-  box-shadow: 0px 0px 8px var(--vp-shadow-2);
+  box-shadow: var(--vp-shadow-2);
+  background: var(--vp-c-bg);
   padding: 8px 12px;
   border-radius: 4px;
   font-size: 14px;
