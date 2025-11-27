@@ -12,12 +12,10 @@ const ns = useDefaultNameSpace('placeholder');
 </script>
 
 <style scoped lang="scss">
-@use './style/var.scss' as *;
-
 .#{$defaultPrefix}-placeholder__container {
   width: 100%;
   border-radius: 4px;
-  border: 1px solid var(--coot-demo-box-border);
+  border: 1px solid var(--vp-c-border);
   margin: 10px 0;
   padding: 20px;
   display: flex;

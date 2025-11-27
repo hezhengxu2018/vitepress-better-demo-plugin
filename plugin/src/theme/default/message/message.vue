@@ -57,27 +57,24 @@ defineExpose({
 </template>
 
 <style lang="scss">
-@use '../style/var.scss' as *;
-
 .#{$defaultPrefix}-message-notice__container {
   display: flex;
   align-items: center;
-  box-shadow: 0px 0px 8px var(--coot-demo-box-message-border);
+  box-shadow: 0px 0px 8px var(--vp-shadow-2);
   padding: 8px 12px;
   border-radius: 4px;
   font-size: 14px;
-  color: var(--coot-demo-box-primary-color);
+  color: var(--vp-c-brand);
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
   z-index: 999;
-  background-color: var(--coot-demo-box-message-bg);
   font-weight: 500;
 
   svg {
     display: inline-block;
     fill: currentColor;
-    color: var(--coot-demo-box-primary-color);
+    color: var(--vp-c-brand);
     cursor: pointer;
     margin-right: 4px;
   }

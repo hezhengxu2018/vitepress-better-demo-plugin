@@ -7,7 +7,7 @@
   "author": "Hezhengxu",
   "license": "MIT",
   "scripts": {
-    "dev": "pnpm -C ./docs dev",
+    "dev": "pnpm -C ./docs docs:dev",
     "build": "pnpm -r build",
     "lint": "eslint --fix",
     "commit": "czg",

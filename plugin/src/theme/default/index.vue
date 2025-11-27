@@ -162,8 +162,6 @@ const ns = useDefaultNameSpace();
 </template>
 
 <style lang="scss">
-@use './style/var.scss' as *;
-
 .#{$defaultPrefix}__container {
   div[class*='language-'] {
     margin-top: 0;
@@ -179,7 +177,7 @@ const ns = useDefaultNameSpace();
 .#{$defaultPrefix}__container {
   width: 100%;
   border-radius: 4px;
-  border: 1px solid var(--coot-demo-box-border);
+  border: 1px solid var(--vp-c-border);
   margin: 10px 0;
 
   .#{$defaultPrefix}-source {
@@ -200,13 +198,13 @@ const ns = useDefaultNameSpace();
 .#{$defaultPrefix}__container > .#{$defaultPrefix}-description {
   position: relative;
   &:has(.#{$defaultPrefix}-description__title) {
-    border-top: 1px solid var(--coot-demo-box-border);
+    border-top: 1px solid var(--vp-c-border);
   }
   .#{$defaultPrefix}-description__title {
     position: absolute;
     top: -12px;
     padding-inline: 8px;
-    background: var(--coot-demo-box-title-bg);
+    background: var(--vp-c-bg);
     font-weight: 500;
     margin-inline-start: 12px;
     border-radius: 6px 6px 0 0;
@@ -217,7 +215,7 @@ const ns = useDefaultNameSpace();
   }
 
   .#{$defaultPrefix}-description__split-line {
-    border-bottom: 1px dashed var(--coot-demo-box-border);
+    border-bottom: 1px dashed var(--vp-c-border);
   }
 
   .#{$defaultPrefix}-description__handle-btn {
@@ -244,7 +242,7 @@ const ns = useDefaultNameSpace();
 .#{$defaultPrefix}__container > .#{$defaultPrefix}-source {
   transition: all 0.4s ease-in-out;
   overflow: hidden;
-  border-top: 1px dashed var(--coot-demo-box-border);
+  border-top: 1px dashed var(--vp-c-border);
 }
 
 .#{$defaultPrefix}__container > .#{$defaultPrefix}-fold {
@@ -261,7 +259,7 @@ const ns = useDefaultNameSpace();
   font-size: 12px;
   column-gap: 4px;
   cursor: pointer;
-  border-top: 1px solid var(--coot-demo-box-border);
+  border-top: 1px solid var(--vp-c-border);
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
 }
@@ -285,10 +283,10 @@ const ns = useDefaultNameSpace();
 }
 
 .#{$defaultPrefix}-lang-tabs {
-  border-bottom: 1px dashed var(--coot-demo-box-border);
+  border-bottom: 1px dashed var(--vp-c-border);
 }
 
 .#{$defaultPrefix}-file-tabs {
-  border-top: 1px dashed var(--coot-demo-box-border);
+  border-top: 1px dashed var(--vp-c-border);
 }
 </style>

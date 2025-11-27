@@ -18,8 +18,6 @@ const props = defineProps<{
 </script>
 
 <style scoped lang="scss">
-@use '../style/var.scss' as *;
-
 .#{$defaultPrefix}-tooltip__wrapper {
   position: relative;
   display: inline-block;
@@ -37,8 +35,8 @@ const props = defineProps<{
   padding: 2px 8px;
   border-radius: 4px;
   white-space: nowrap;
-  background-color: var(--coot-demo-box-tooltip-bg);
-  color: var(--coot-demo-box-tooltip-color);
+  background-color: var(--vp-c-bg-alt);
+  color: var(--vp-c-bg-alt);
   transform: translate(-50%, -100%);
   display: none;
 }

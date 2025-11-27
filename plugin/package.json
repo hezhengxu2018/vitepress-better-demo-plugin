@@ -37,9 +37,11 @@
     "src"
   ],
   "scripts": {
+    "dev:theme": "vite build -c ./vite.theme.config.ts --watch",
+    "dev:plugin": "vite build -c ./vite.plugin.config.ts --watch",
+    "build": "pnpm build:plugin && pnpm build:theme",
     "build:plugin": "vite build -c ./vite.plugin.config.ts",
     "build:theme": "vite build -c ./vite.theme.config.ts",
-    "dev": "vite build --watch",
     "release": "pnpm build && vr release --skip-changelog"
   },
   "peerDependencies": {

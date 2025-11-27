@@ -14,7 +14,7 @@ const ns = useEpNameSpace('placeholder');
 .#{$epPrefix}-placeholder__container {
   width: 100%;
   border-radius: 4px;
-  border: 1px solid var(--coot-demo-box-border);
+  border: 1px solid var(--vp-c-border);
   overflow: hidden;
   min-height: 200px;
 }
