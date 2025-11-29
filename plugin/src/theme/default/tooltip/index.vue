@@ -1,21 +1,23 @@
+<script setup lang="ts">
+import { useDefaultNameSpace } from '../../../shared/utils/namespace'
+
+const props = defineProps<{
+  content: string
+}>()
+
+const ns = useDefaultNameSpace()
+</script>
+
 <template>
   <div :class="[ns.bem('tooltip', 'wrapper')]">
     <div :class="[ns.bem('tooltip', 'content')]">
-      <slot name="content">{{ props.content }}</slot>
+      <slot name="content">
+        {{ props.content }}
+      </slot>
     </div>
-    <slot></slot>
+    <slot />
   </div>
 </template>
-
-<script setup lang="ts">
-import { useDefaultNameSpace } from '../../../shared/utils/namespace';
-
-const ns = useDefaultNameSpace();
-
-const props = defineProps<{
-  content: string;
-}>();
-</script>
 
 <style lang="scss">
 :root {

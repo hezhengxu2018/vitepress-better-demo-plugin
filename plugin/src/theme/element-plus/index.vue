@@ -1,19 +1,19 @@
 <script lang="ts" setup>
-import type { VitepressDemoBoxProps } from "@/types";
+import type { VitepressDemoBoxProps } from '@/types'
+import { ElCollapseTransition, ElDivider, ElIcon, ElMessage, ElRadio, ElRadioButton, ElRadioGroup, ElTooltip } from 'element-plus'
+import { useDemoBox } from '@/shared/composables/useDemoBox'
+import { COMPONENT_TYPE } from '@/shared/constant'
+import { i18n } from '@/shared/locales/i18n'
+import { useEpNameSpace } from '@/shared/utils/namespace'
 import {
   CodeOpenIcon,
+  CodeSandboxIcon,
   CopyIcon,
   FoldIcon,
-  CodeSandboxIcon,
-  StackblitzIcon,
   GithubIcon,
   GitlabIcon,
-} from './icons/index';
-import { ElTooltip, ElIcon, ElMessage, ElRadioGroup, ElRadioButton, ElRadio, ElDivider, ElCollapseTransition } from 'element-plus';
-import { useEpNameSpace } from '@/shared/utils/namespace';
-import { useDemoBox } from '@/shared/composables/useDemoBox';
-import { COMPONENT_TYPE } from '@/shared/constant';
-import { i18n } from '@/shared/locales/i18n';
+  StackblitzIcon,
+} from './icons/index'
 
 const props = withDefaults(defineProps<VitepressDemoBoxProps>(), {
   title: '标题',
@@ -24,13 +24,13 @@ const props = withDefaults(defineProps<VitepressDemoBoxProps>(), {
   github: '',
   gitlab: '',
   htmlWriteWay: 'write',
-  codeHighlights: ''
-});
+  codeHighlights: '',
+})
 
-const emit = defineEmits(['mount']);
+const emit = defineEmits(['mount'])
 
 function onCopySuccess() {
-  ElMessage.success(i18n.value.copySuccess);
+  ElMessage.success(i18n.value.copySuccess)
 }
 
 const {
@@ -51,34 +51,36 @@ const {
   reactContainerRef,
 } = useDemoBox(props, emit, {
   onCopySuccess,
-});
+})
 
-const ns = useEpNameSpace();
+const ns = useEpNameSpace()
 </script>
 
 <template>
   <div :class="[ns.e('container')]">
     <!-- 预览区 -->
-    <section :class="[ns.bem('preview'), 'vp-raw']" :style="{ background: props.background }">
-      <slot name="vue" v-if="type === 'vue'"></slot>
-      <div ref="htmlContainerRef" v-else-if="type === 'html'">
-        <iframe style="width: 100%; height: auto; border: none"></iframe>
+    <section class="vp-raw" :class="[ns.bem('preview')]" :style="{ background: props.background }">
+      <slot v-if="type === 'vue'" name="vue" />
+      <div v-else-if="type === 'html'" ref="htmlContainerRef">
+        <iframe style="width: 100%; height: auto; border: none" />
       </div>
-      <div ref="reactContainerRef" v-else-if="type === 'react'"></div>
+      <div v-else-if="type === 'react'" ref="reactContainerRef" />
     </section>
     <!-- 描述及切换 -->
     <section :class="[ns.bem('description')]">
-      <ElDivider  v-if="title" :class="[ns.bem('description', 'title')]" content-position="left">{{ title }}</ElDivider>
+      <ElDivider v-if="title" :class="[ns.bem('description', 'title')]" content-position="left">
+        {{ title }}
+      </ElDivider>
       <div
         v-if="description"
         :class="[ns.bem('description', 'content')]"
         v-html="description"
-      ></div>
+      />
       <div
         v-if="props.description || (!props.title && !props.description)"
         :class="[ns.bem('description', 'split-line')]"
-      ></div>
-      <div :class="[ns.bem('lang-tabs')]" v-if="tabs.length > 1 && visible">
+      />
+      <div v-if="tabs.length > 1 && visible" :class="[ns.bem('lang-tabs')]">
         <ElRadioGroup v-model="type">
           <ElRadio
             v-for="tab in tabs"
@@ -90,7 +92,7 @@ const ns = useEpNameSpace();
         </ElRadioGroup>
       </div>
       <div :class="[ns.bem('description', 'handle-btn-op-bar')]">
-        <ElTooltip :content="i18n.openInStackblitz" v-if="stackblitz.show">
+        <ElTooltip v-if="stackblitz.show" :content="i18n.openInStackblitz">
           <ElIcon :class="ns.bem('description', 'handle-btn')">
             <StackblitzIcon
               :code="currentCode"
@@ -100,7 +102,7 @@ const ns = useEpNameSpace();
             />
           </ElIcon>
         </ElTooltip>
-        <ElTooltip :content="i18n.openInCodeSandbox" v-if="codesandbox.show">
+        <ElTooltip v-if="codesandbox.show" :content="i18n.openInCodeSandbox">
           <ElIcon :class="ns.bem('description', 'handle-btn')">
             <CodeSandboxIcon
               :code="currentCode"
@@ -110,12 +112,12 @@ const ns = useEpNameSpace();
             />
           </ElIcon>
         </ElTooltip>
-        <ElTooltip :content="i18n.openInGithub" v-if="github">
+        <ElTooltip v-if="github" :content="i18n.openInGithub">
           <ElIcon :class="ns.bem('description', 'handle-btn')">
             <GithubIcon @click="openGithub" />
           </ElIcon>
         </ElTooltip>
-        <ElTooltip :content="i18n.openInGitlab" v-if="gitlab">
+        <ElTooltip v-if="gitlab" :content="i18n.openInGitlab">
           <ElIcon :class="ns.bem('description', 'handle-btn')">
             <GitlabIcon @click="openGitlab" />
           </ElIcon>
@@ -140,15 +142,15 @@ const ns = useEpNameSpace();
             <ElRadioGroup v-model="activeFile">
               <ElRadioButton
                 v-for="file in Object.keys(currentFiles)"
-                size="small"
                 :key="file"
+                size="small"
                 :value="file"
               >
                 {{ file }}
               </ElRadioButton>
             </ElRadioGroup>
           </div>
-          <div v-html="currentCodeHtml"></div>
+          <div v-html="currentCodeHtml" />
         </div>
       </ElCollapseTransition>
 

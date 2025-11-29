@@ -1,3 +1,38 @@
+<script lang="ts" setup>
+import type { ComponentType, PlatformTemplate } from '@/types'
+import { computed } from 'vue'
+import {
+  DEFAULT_DESCRIPTION,
+  DEFAULT_TITLE,
+} from '@/shared/constant'
+import { getInitialFile } from '@/shared/platform'
+import { getCodeSandboxParams } from '@/shared/platform/sandbox'
+
+const props = defineProps<{
+  code: string
+  type: ComponentType
+  title?: string
+  description?: string
+  scope?: string
+  templates: PlatformTemplate[]
+}>()
+
+const parameters = computed(() =>
+  getCodeSandboxParams({
+    code: props.code,
+    type: props.type,
+    title: props.title || DEFAULT_TITLE,
+    description: props.description || DEFAULT_DESCRIPTION,
+    scope: props.scope,
+    templates: props.templates,
+  }),
+)
+
+const initialFile = computed(() => {
+  return getInitialFile(props.type)
+})
+</script>
+
 <template>
   <form
     action="https://codesandbox.io/api/v1/sandboxes/define"
@@ -5,13 +40,13 @@
     target="_blank"
     style="display: flex"
   >
-    <input style="display: none" name="parameters" :value="parameters" />
-    <input style="display: none" name="embed" :value="1" />
+    <input style="display: none" name="parameters" :value="parameters">
+    <input style="display: none" name="embed" :value="1">
     <input
       style="display: none"
       name="query"
       :value="`module=${initialFile}`"
-    />
+    >
     <button type="submit">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -37,38 +72,3 @@
     </button>
   </form>
 </template>
-
-<script lang="ts" setup>
-import type { ComponentType, PlatformTemplate } from "@/types";
-import { computed } from 'vue';
-import { getInitialFile } from '@/shared/platform';
-import { getCodeSandboxParams } from '@/shared/platform/sandbox';
-import {
-  DEFAULT_DESCRIPTION,
-  DEFAULT_TITLE,
-} from '@/shared/constant';
-
-const props = defineProps<{
-  code: string;
-  type: ComponentType;
-  title?: string;
-  description?: string;
-  scope?: string;
-  templates: PlatformTemplate[];
-}>();
-
-const parameters = computed(() =>
-  getCodeSandboxParams({
-    code: props.code,
-    type: props.type,
-    title: props.title || DEFAULT_TITLE,
-    description: props.description || DEFAULT_DESCRIPTION,
-    scope: props.scope,
-    templates: props.templates,
-  })
-);
-
-const initialFile = computed(() => {
-  return getInitialFile(props.type);
-});
-</script>

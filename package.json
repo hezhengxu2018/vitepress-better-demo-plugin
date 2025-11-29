@@ -19,6 +19,7 @@
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
     "@element-plus/icons-vue": "^2.3.2",
+    "@release-it/conventional-changelog": "^10",
     "@stackblitz/sdk": "^1.11.0",
     "@types/node": "^22.17.1",
     "cz-git": "^1.12.0",

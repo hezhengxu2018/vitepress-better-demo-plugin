@@ -1,21 +1,21 @@
 <script lang="ts" setup>
-import type { ComponentType, VitepressDemoBoxProps } from '@/types';
+import type { ComponentType, VitepressDemoBoxProps } from '@/types'
+import { useDemoBox } from '@/shared/composables/useDemoBox'
+import { COMPONENT_TYPE } from '@/shared/constant'
+import { i18n } from '@/shared/locales/i18n'
+import { useDefaultNameSpace } from '../../shared/utils/namespace'
 import {
-  CodeOpenIcon,
   CodeCloseIcon,
+  CodeOpenIcon,
+  CodeSandboxIcon,
   CopyIcon,
   FoldIcon,
-  CodeSandboxIcon,
-  StackblitzIcon,
   GithubIcon,
   GitlabIcon,
-} from './icons/index';
-import { MessageService } from './message';
-import Tooltip from './tooltip/index.vue';
-import { useDefaultNameSpace } from '../../shared/utils/namespace';
-import { useDemoBox } from '@/shared/composables/useDemoBox';
-import { COMPONENT_TYPE } from '@/shared/constant';
-import { i18n } from '@/shared/locales/i18n';
+  StackblitzIcon,
+} from './icons/index'
+import { MessageService } from './message'
+import Tooltip from './tooltip/index.vue'
 
 const props = withDefaults(defineProps<VitepressDemoBoxProps>(), {
   title: '标题',
@@ -26,9 +26,9 @@ const props = withDefaults(defineProps<VitepressDemoBoxProps>(), {
   github: '',
   gitlab: '',
   htmlWriteWay: 'write',
-});
+})
 
-const emit = defineEmits(['mount']);
+const emit = defineEmits(['mount'])
 
 const {
   stackblitz,
@@ -48,68 +48,70 @@ const {
   reactContainerRef,
 } = useDemoBox(props, emit, {
   onCopySuccess: () => MessageService.open(i18n.value.copySuccess),
-});
+})
 
-const setCodeType = (tab: ComponentType) => {
-  type.value = tab;
-};
+function setCodeType(tab: ComponentType) {
+  type.value = tab
+}
 
-const handleFileClick = (file: string) => {
-  activeFile.value = file;
-};
+function handleFileClick(file: string) {
+  activeFile.value = file
+}
 
-const ns = useDefaultNameSpace();
+const ns = useDefaultNameSpace()
 
-const cleanupSourceTransitionStyle = (el: Element) => {
-  const element = el as HTMLElement;
-  element.style.height = '';
-  element.style.transition = '';
-};
+function cleanupSourceTransitionStyle(el: Element) {
+  const element = el as HTMLElement
+  element.style.height = ''
+  element.style.transition = ''
+}
 
-const handleSourceEnter = (el: Element) => {
-  const element = el as HTMLElement;
-  element.style.height = '0px';
+function handleSourceEnter(el: Element) {
+  const element = el as HTMLElement
+  element.style.height = '0px'
   requestAnimationFrame(() => {
-    element.style.transition = 'height 1s ease';
-    element.style.height = `${element.scrollHeight}px`;
-  });
-};
+    element.style.transition = 'height 1s ease'
+    element.style.height = `${element.scrollHeight}px`
+  })
+}
 
-const handleSourceLeave = (el: Element) => {
-  const element = el as HTMLElement;
-  element.style.height = `${element.scrollHeight}px`;
+function handleSourceLeave(el: Element) {
+  const element = el as HTMLElement
+  element.style.height = `${element.scrollHeight}px`
   requestAnimationFrame(() => {
-    element.style.transition = 'height 0.3s ease';
-    element.style.height = '0px';
-  });
-};
+    element.style.transition = 'height 0.3s ease'
+    element.style.height = '0px'
+  })
+}
 </script>
 
 <template>
   <div :class="[ns.e('container')]">
     <!-- 预览区 -->
-    <section :class="[ns.bem('preview'), 'vp-raw']" :style="{ background: props.background }">
-      <slot name="vue" v-if="type === 'vue'"></slot>
-      <div ref="htmlContainerRef" v-else-if="type === 'html'">
-        <iframe style="width: 100%; height: auto; border: none"></iframe>
+    <section class="vp-raw" :class="[ns.bem('preview')]" :style="{ background: props.background }">
+      <slot v-if="type === 'vue'" name="vue" />
+      <div v-else-if="type === 'html'" ref="htmlContainerRef">
+        <iframe style="width: 100%; height: auto; border: none" />
       </div>
-      <div ref="reactContainerRef" v-else-if="type === 'react'"></div>
+      <div v-else-if="type === 'react'" ref="reactContainerRef" />
     </section>
     <!-- 描述及切换 -->
     <section :class="[ns.bem('description')]">
       <div v-if="title" :class="[ns.bem('description', 'title')]">
-        <div style="flex-shrink: 0">{{ title }}</div>
+        <div style="flex-shrink: 0">
+          {{ title }}
+        </div>
       </div>
       <div
         v-if="description"
         :class="[ns.bem('description', 'content')]"
         v-html="description"
-      ></div>
+      />
       <div
         v-if="props.description || (!props.title && !props.description)"
         :class="[ns.bem('description', 'split-line')]"
-      ></div>
-      <div :class="[ns.bem('lang-tabs')]" v-if="tabs.length > 1 && visible">
+      />
+      <div v-if="tabs.length > 1 && visible" :class="[ns.bem('lang-tabs')]">
         <div
           v-for="tab in tabs"
           :key="tab"
@@ -120,7 +122,7 @@ const handleSourceLeave = (el: Element) => {
         </div>
       </div>
       <div :class="[ns.bem('description', 'handle-btn')]">
-        <Tooltip :content="i18n.openInStackblitz" v-if="stackblitz.show">
+        <Tooltip v-if="stackblitz.show" :content="i18n.openInStackblitz">
           <StackblitzIcon
             :code="currentCode"
             :type="type"
@@ -128,7 +130,7 @@ const handleSourceLeave = (el: Element) => {
             :templates="stackblitz.templates || []"
           />
         </Tooltip>
-        <Tooltip :content="i18n.openInCodeSandbox" v-if="codesandbox.show">
+        <Tooltip v-if="codesandbox.show" :content="i18n.openInCodeSandbox">
           <CodeSandboxIcon
             :code="currentCode"
             :type="type"
@@ -136,16 +138,16 @@ const handleSourceLeave = (el: Element) => {
             :templates="codesandbox.templates || []"
           />
         </Tooltip>
-        <Tooltip :content="i18n.openInGithub" v-if="github">
+        <Tooltip v-if="github" :content="i18n.openInGithub">
           <GithubIcon @click="openGithub" />
         </Tooltip>
-        <Tooltip :content="i18n.openInGitlab" v-if="gitlab">
+        <Tooltip v-if="gitlab" :content="i18n.openInGitlab">
           <GitlabIcon @click="openGitlab" />
         </Tooltip>
-        <Tooltip :content="i18n.collapseCode" v-if="!isCodeFold">
+        <Tooltip v-if="!isCodeFold" :content="i18n.collapseCode">
           <CodeCloseIcon @click="setCodeFold(true)" />
         </Tooltip>
-        <Tooltip :content="i18n.expandCode" v-else>
+        <Tooltip v-else :content="i18n.expandCode">
           <CodeOpenIcon @click="setCodeFold(false)" />
         </Tooltip>
         <Tooltip :content="i18n.copyCode">
@@ -166,8 +168,8 @@ const handleSourceLeave = (el: Element) => {
         :class="[ns.bem('source'), { 'is-expanded': !isCodeFold }]"
       >
         <div
-          :class="[ns.bem('file-tabs')]"
           v-if="Object.keys(currentFiles).length"
+          :class="[ns.bem('file-tabs')]"
         >
           <div
             v-for="file in Object.keys(currentFiles)"
@@ -181,12 +183,12 @@ const handleSourceLeave = (el: Element) => {
             {{ file }}
           </div>
         </div>
-        <div v-if="currentCodeHtml" v-html="currentCodeHtml"></div>
+        <div v-if="currentCodeHtml" v-html="currentCodeHtml" />
         <pre v-else class="language-plaintext"><code>{{ currentCode || '' }}</code></pre>
       </section>
     </Transition>
 
-    <div :class="ns.bem('fold')" v-if="!isCodeFold" @click="setCodeFold(true)">
+    <div v-if="!isCodeFold" :class="ns.bem('fold')" @click="setCodeFold(true)">
       <FoldIcon />{{ i18n.collapseCode }}
     </div>
   </div>

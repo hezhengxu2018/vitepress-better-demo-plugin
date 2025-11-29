@@ -1,15 +1,17 @@
+<script setup lang="ts">
+import { useDefaultNameSpace } from '../../shared/utils/namespace'
+
+const ns = useDefaultNameSpace('placeholder')
+</script>
+
 <template>
   <div :class="[ns.e('container')]">
-    <div class="loader"></div>
-    <div class="loading-text">loading</div>
+    <div class="loader" />
+    <div class="loading-text">
+      loading
+    </div>
   </div>
 </template>
-
-<script setup lang="ts">
-  import { useDefaultNameSpace } from '../../shared/utils/namespace';
-
-const ns = useDefaultNameSpace('placeholder');
-</script>
 
 <style scoped lang="scss">
 .#{$defaultPrefix}-placeholder__container {

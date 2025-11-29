@@ -1,46 +1,46 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { SuccessIcon } from '../icons/index';
-import { useDefaultNameSpace } from '../../../shared/utils/namespace';
-
-const Duration = 3000;
-
-const ns = useDefaultNameSpace();
-
-interface message {
-  content: string;
-  close: () => void;
-}
+import { ref, watch } from 'vue'
+import { useDefaultNameSpace } from '../../../shared/utils/namespace'
+import { SuccessIcon } from '../icons/index'
 
 const props = withDefaults(defineProps<message>(), {
   content: '复制成功！',
-});
+})
 
-const visible = ref(false);
-const setVisible = (value: boolean) => {
-  visible.value = value;
-};
-const topHeight = ref(-9999);
-const setTopHeight = (value: number) => {
-  topHeight.value = value;
-};
+const Duration = 3000
+
+const ns = useDefaultNameSpace()
+
+interface message {
+  content: string
+  close: () => void
+}
+
+const visible = ref(false)
+function setVisible(value: boolean) {
+  visible.value = value
+}
+const topHeight = ref(-9999)
+function setTopHeight(value: number) {
+  topHeight.value = value
+}
 
 watch(visible, (newValue) => {
   if (newValue === true) {
     setTimeout(() => {
-      visible.value = false;
-    }, Duration);
+      visible.value = false
+    }, Duration)
   }
-});
+})
 
-const handleDestroy = () => {
-  props.close();
-};
+function handleDestroy() {
+  props.close()
+}
 
 defineExpose({
   setVisible,
   setTopHeight,
-});
+})
 </script>
 
 <template>
@@ -48,7 +48,7 @@ defineExpose({
     <div
       v-if="visible"
       :class="[ns.bem('message-notice', 'container')]"
-      :style="{ top: topHeight + 'px' }"
+      :style="{ top: `${topHeight}px` }"
     >
       <SuccessIcon />
       <span style="color: var(--vp-c-text-1)">{{ content }}</span>

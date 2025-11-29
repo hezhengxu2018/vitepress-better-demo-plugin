@@ -1,14 +1,13 @@
-<template>
-  <div v-loading="true" :class="[ns.e('container')]">
-  </div>
-</template>
-
 <script setup lang="ts">
-import { vLoading } from "element-plus";
-import { useEpNameSpace } from '../../shared/utils/namespace';
+import { vLoading } from 'element-plus'
+import { useEpNameSpace } from '../../shared/utils/namespace'
 
-const ns = useEpNameSpace('placeholder');
+const ns = useEpNameSpace('placeholder')
 </script>
+
+<template>
+  <div v-loading="true" :class="[ns.e('container')]" />
+</template>
 
 <style scoped lang="scss">
 .#{$epPrefix}-placeholder__container {

@@ -42,7 +42,8 @@
     "build": "pnpm build:plugin && pnpm build:theme",
     "build:plugin": "vite build -c ./vite.plugin.config.ts",
     "build:theme": "vite build -c ./vite.theme.config.ts",
-    "release": "pnpm build && vr release --skip-changelog"
+    "lint": "eslint --fix",
+    "release": "pnpm build && release-it"
   },
   "peerDependencies": {
     "element-plus": "^2.2.0",
