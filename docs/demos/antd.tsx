@@ -1,5 +1,5 @@
-import { Button, Flex } from 'antd'
-import React from 'react'
+import React from 'react';
+import { Button, Flex } from 'antd';
 
 const App: React.FC = () => (
   <Flex gap="small" wrap>
@@ -9,6 +9,6 @@ const App: React.FC = () => (
     <Button type="text">Text Button</Button>
     <Button type="link">Link Button</Button>
   </Flex>
-)
+);
 
-export default App
+export default App;

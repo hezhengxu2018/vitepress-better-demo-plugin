@@ -12,7 +12,7 @@ const Duration = 3000
 const ns = useDefaultNameSpace()
 
 interface message {
-  content: string
+  content?: string
   close: () => void
 }
 

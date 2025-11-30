@@ -3,24 +3,30 @@
 layout: home
 
 hero:
-  name: Vitepress Demo Plugin
-  text: Preview your DEMO in real time
-  tagline: Support Vue, React, and HTML
+  name: VitePress Better Demo Plugin
+  tagline: A better demo experience for VitePress
   actions:
     - theme: brand
       text: Quick Start
       link: /en/guide/start
     - theme: alt
-      text: DEMO Example
+      text: Demo Showcase
       link: /en/components/antd
   image:
       src: /logo.svg
       alt: ChoDocs
 features:
-  - title: Easy Usage
-    details: With just a few lines of code, you can add usage to your Vitepress site.
-  - title: Multiple Syntax
-    details: Support demo display and rendering of multiple syntaxes such as vue/react/html
-  - title: Highly Functional
-    details: Integrated support for code display/demo rendering/code copying/navigation to third-party platforms
+  - title: Full TS Support
+    details: Complete configuration hints that streamline your development experience.
+  - title: Multi-Theme Support
+    details: Supports custom themes and bundles both Default and Element-Plus themes out of the box.
+  - title: markdown-it-container Support
+    details: Adds an extended markdown-it-container syntax for composing your demo documentation.
+  - title: Built-In Code Rendering
+    details: Reuses the Shiki configuration from VitePress so demo code renders consistently across the site.
 ---
+
+
+::: tip Tip
+This plugin is forked from `vitepress-demo-plugin` v1.5.0. If you don't need these additional features or prefer to configure Shiki separately for rendering, you can use the original [vitepress-demo-plugin](https://github.com/zh-lx/vitepress-demo-plugin).
+:::

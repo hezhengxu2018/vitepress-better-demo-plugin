@@ -2,7 +2,8 @@
   "scripts": {
     "docs:dev": "vitepress dev",
     "docs:build": "vitepress build",
-    "docs:preview": "vitepress preview"
+    "docs:preview": "vitepress preview",
+    "lint": "eslint --fix"
   },
   "devDependencies": {
     "@emotion/styled": "^11.13.0",

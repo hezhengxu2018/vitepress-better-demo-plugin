@@ -1,8 +1,12 @@
 # Third Party Platform
 
+::: tip Tip
+This section of the documentation is identical to `vitepress-demo-plugin`.
+:::
+
 ## Jump To Online Code Editing Platform
 
-`vitepress-demo-plugin` supports jumping to popular online code editing platforms, such as Stackblitz, Codesandbox, etc., with two ways of local opening and global opening.
+`vitepress-better-demo-plugin` supports jumping to popular online code editing platforms, such as Stackblitz, Codesandbox, etc., with two ways of local opening and global opening.
 
 ### Local
 
@@ -20,9 +24,13 @@ The rendering effect is as follows:
 
 Add the following configuration in `.vitepress/config.ts` to take effect on all `<demo />` components.
 
+## Open in Online Code Editors
+
+`vitepress-better-demo-plugin` supports opening demos in popular online code editors such as StackBlitz and CodeSandbox, with both local and global modes.
+
 ```ts
-import { defineConfig } from 'vitepress'
-import { vitepressDemoPlugin } from 'vitepress-demo-plugin'
+import { defineConfig } from 'vitepress';
+import { vitepressDemoPlugin } from 'vitepress-better-demo-plugin';
 
 export default defineConfig({
   // other configs...
@@ -35,14 +43,15 @@ export default defineConfig({
         codesandbox: { // [!code ++]
           show: true, // [!code ++]
         }, // [!code ++]
-      })
+      });
     },
   },
-})
+});
 ```
+
 ## Preset Files And Codes
 
-`vitepress-demo-plugin` presets some file configurations, so that you can open `stackblitz/codesandbox` and other platforms to preview your `<demo />` without a separate configuration file in most cases. The preset files and codes for different platforms and demo types are as follows:
+`vitepress-better-demo-plugin` presets some file configurations, so that you can open `stackblitz/codesandbox` and other platforms to preview your `<demo />` without a separate configuration file in most cases. The preset files and codes for different platforms and demo types are as follows:
 
 ::: details Expand to view the stackblitz platform Vue preset files and codes
 ::: code-group
@@ -52,11 +61,11 @@ export default defineConfig({
 ```
 
 ```ts [src/main.ts]
-import { createApp } from 'vue'
-import Demo from './Demo.vue'
+import { createApp } from "vue";
+import Demo from "./Demo.vue";
 
-const app = createApp(Demo)
-app.mount('#app')
+const app = createApp(Demo);
+app.mount("#app");
 ```
 
 ```json [.stackblitzrc]
@@ -87,7 +96,7 @@ app.mount('#app')
     "serve": "vite preview"
   },
   "dependencies": {
-    "vue": "latest"
+    "vue": "latest",
     // Will be automatically added based on the import dependencies in your demo
   },
   "devDependencies": {
@@ -128,13 +137,12 @@ app.mount('#app')
 ```
 
 ```ts [vite.config.js]
-import vue from '@vitejs/plugin-vue'
-import vueJsx from '@vitejs/plugin-vue-jsx'
-import { defineConfig } from 'vite'
-
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import vueJsx from '@vitejs/plugin-vue-jsx';
 export default defineConfig({
   plugins: [vue(), vueJsx()],
-})
+});
 ```
 
 :::
@@ -228,26 +236,25 @@ root.render(<Demo />);
 ```
 
 ```ts [vite.config.js]
-import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
-
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
-})
+});
 ```
 
 :::
 
-::: details Expand to view the stackblitz platform Html preset files and codes
+::: details Expand to view the StackBlitz platform HTML preset files and codes
 ::: code-group
 
 ```html [index.html]
-<!-- Expand to view the stackblitz platform Html preset files and codes -->
+<!-- Expand to view the StackBlitz platform HTML preset files and codes -->
 ```
 
 :::
 
-::: details Expand to view codesandbox platform Vue preset files and codes
+::: details Expand to view CodeSandbox platform Vue preset files and codes
 ::: code-group
 
 ```html [Demo.vue]
@@ -255,11 +262,11 @@ export default defineConfig({
 ```
 
 ```ts [main.ts]
-import { createApp } from 'vue'
-import Demo from './Demo.vue'
+import { createApp } from "vue";
+import Demo from "./Demo.vue";
 
-const app = createApp(Demo)
-app.mount('#app')
+const app = createApp(Demo);
+app.mount("#app");
 ```
 
 ```html [index.html]
@@ -395,33 +402,33 @@ root.render(<Demo />);
 ::: code-group
 
 ```html [index.html]
-<!-- Expand to view the stackblitz platform Html preset files and codes -->
+<!-- Expand to view the StackBlitz platform HTML preset files and codes -->
 ```
 
 :::
 
 ## Custom Files And Code
 
-`vitepress-demo-plugin` supports custom files and code. You can add `templates` configuration in `.vitepress/config.ts` to replace the code of the preset file or add a new file. The types of `templates` are as follows:
+`vitepress-better-demo-plugin` supports custom files and code. You can add `templates` configuration in `.vitepress/config.ts` to replace the code of the preset file or add a new file. The types of `templates` are as follows:
 
 ```ts
-interface Template {
-  scope: 'global' | 'vue' | 'react' | 'html' | string
+type Template = {
+  scope: 'global' | 'vue' | 'react' | 'html' | string;
   files: {
-    [filename: string]: string // Code
-  }
+    [filename: string]: string; // Code
+  };
 }
 
-type Templates = Template[]
+type Templates = Template[];
 ```
 
 ### All Kinds
 
-When `scope` is set to `global`, it means that the template is effective for all types of demo components. Take the stackblitz platform as an example:
+When `scope` is set to `global`, it means that the template is effective for all types of demo components. Take the StackBlitz platform as an example:
 
 ```ts
-import { defineConfig } from 'vitepress'
-import { vitepressDemoPlugin } from 'vitepress-demo-plugin'
+import { defineConfig } from 'vitepress';
+import { vitepressDemoPlugin } from 'vitepress-better-demo-plugin';
 
 export default defineConfig({
   // other configs...
@@ -435,26 +442,26 @@ export default defineConfig({
               scope: 'global', // This is effective for all types of demo components. // [!code ++]
               files: { // [!code ++]
                 // Add new file // [!code ++]
-                'print.js': `console.log("Hello！Vitepress Demo Plugin")`, // [!code ++]
+                'print.js': `console.log("Hello! VitePress Demo Plugin")`, // [!code ++]
                 // Replace the default index.html file // [!code ++]
                 'index.html': `<!DOCTYPE html><html><body><div id="app"></div></body><script src="print.js"></script></html>`, // [!code ++]
               } // [!code ++]
             }, // [!code ++]
           ], // [!code ++]
         }
-      })
+      });
     },
   }
-})
+});
 ```
 
 ### Single Kind
 
-When `scope` is set to `vue/react/html`, it means that the template is only valid for demo components of the corresponding type. Take the following demo as an example, it is only valid for demo components of the Vue type:
+When `scope` is set to `vue/react/html`, it means that the template is only valid for demo components of the corresponding type. Take the following demo as an example — it is only valid for Vue demo components:
 
 ```ts
-import { defineConfig } from 'vitepress'
-import { vitepressDemoPlugin } from 'vitepress-demo-plugin'
+import { defineConfig } from 'vitepress';
+import { vitepressDemoPlugin } from 'vitepress-better-demo-plugin';
 
 export default defineConfig({
   // other configs...
@@ -468,7 +475,7 @@ export default defineConfig({
               scope: 'global', // This is effective for all types of demo components.
               files: {
                 // Add new file
-                'print.js': `console.log("Hello！Vitepress Demo Plugin")`,
+                'print.js': `console.log("Hello! VitePress Demo Plugin")`,
                 // Replace the default index.html file
                 'index.html': `<!DOCTYPE html><html><body><div id="app"></div></body><script src="print.js"></script></html>`,
               },
@@ -482,10 +489,10 @@ export default defineConfig({
             }, // [!code ++]
           ]
         }
-      })
+      });
     },
   }
-})
+});
 ```
 
 ### Customize The Demo Scope
@@ -493,8 +500,8 @@ export default defineConfig({
 You can also customize the name of `scope` to indicate that the template is only valid for demo components of the corresponding type. For example:
 
 ```ts
-import { defineConfig } from 'vitepress'
-import { vitepressDemoPlugin } from 'vitepress-demo-plugin'
+import { defineConfig } from 'vitepress';
+import { vitepressDemoPlugin } from 'vitepress-better-demo-plugin';
 
 export default defineConfig({
   // other configs...
@@ -508,17 +515,17 @@ export default defineConfig({
               scope: 'global', // This is effective for all types of demo components.
               files: {
                 // Add new file
-                'print.js': `console.log("Hello！Vitepress Demo Plugin")`,
+                'print.js': `console.log("Hello! VitePress Demo Plugin")`,
                 // Replace the default index.html file
                 'index.html': `<!DOCTYPE html><html><body><div id="app"></div></body><script src="print.js"></script></html>`,
               },
             },
-            {
+            { 
               scope: 'vue', // Only valid for Vue demo components
-              files: {
+              files: { 
                 // Replace the default main.ts file
-                'main.ts': `import { createApp } from "vue";\nimport Demo from "./Demo.vue";\nconst app = createApp(Demo);\napp.mount("#app");`,
-              }
+                'main.ts': `import { createApp } from "vue";\nimport Demo from "./Demo.vue";\nconst app = createApp(Demo);\napp.mount("#app");`, 
+              } 
             },
             { // [!code ++]
               scope: 'myScope', // Only valid for scope demo components // [!code ++]
@@ -529,10 +536,10 @@ export default defineConfig({
             }, // [!code ++]
           ]
         }
-      })
+      });
     },
   }
-})
+});
 ```
 
 Now that you have defined a template named `myScope`, you can use the `scope` property to make the template available to a specific demo component.

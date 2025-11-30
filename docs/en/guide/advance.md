@@ -1,12 +1,16 @@
 # Advanced Configuration
 
+::: tip Tip
+This section of the documentation is identical to `vitepress-demo-plugin` except for the [Code Theme](#code-theme) section.
+:::
+
 ## Specify Directory
 
 If your demo file and your `.md` file are not in the same directory, the relative path to reference the demo may be long. You can specify the directory where the demo is located through the `demoDir` property to simplify the import path.
 
 For example, the following directory structure:
 
-```
+``` shell
 docs
 ├─ .vitepress
 │  └─ config.ts
@@ -22,9 +26,9 @@ docs
 Add following code into `config.ts`：
 
 ```ts
-import path from 'node:path'
-import { defineConfig } from 'vitepress'
-import { vitepressDemoPlugin } from 'vitepress-demo-plugin'
+import { defineConfig } from 'vitepress';
+import { vitepressDemoPlugin } from 'vitepress-better-demo-plugin';
+import path from 'path';
 
 export default defineConfig({
   // other configs...
@@ -32,10 +36,10 @@ export default defineConfig({
     config(md) {
       md.use(vitepressDemoPlugin, {
         demoDir: path.resolve(__dirname, '../demos'), // [!code ++]
-      })
+      });
     },
   },
-})
+});
 ```
 
 ### Before Configuring The Specified Directory
@@ -101,9 +105,9 @@ The corresponding rendering result is as follows:
 If you want to make it effective for the global `<demo />` component, add the `tabs` configuration in `.vitepress/config.ts`, for example:
 
 ```ts
-import path from 'node:path'
-import { defineConfig } from 'vitepress'
-import { vitepressDemoPlugin } from 'vitepress-demo-plugin'
+import { defineConfig } from 'vitepress';
+import { vitepressDemoPlugin } from 'vitepress-better-demo-plugin';
+import path from 'path';
 
 export default defineConfig({
   // other configs...
@@ -116,10 +120,10 @@ export default defineConfig({
           order: 'html,react,vue', // [!code ++]
           select: 'react', // [!code ++]
         }, // [!code ++]
-      })
+      });
     },
   },
-})
+});
 ```
 
 ## Display Multiple Files Code
@@ -144,7 +148,7 @@ The corresponding rendering result is as follows:
 
 ### Object
 
-By default, `vitepress-demo-plugin` takes the `basename` of the file path as the file name when displaying multiple files. You can also specify the file name through the `vueFiles/reactFiles/htmlFiles` property of the `Object` type. For example, if you want to use `constant/students.ts` to reflect the directory hierarchy of the file, you can do it as follows:
+By default, `vitepress-better-demo-plugin` uses the basename of each file path as its display name in multi-file demos. You can override these display names by providing an object to the `vueFiles/reactFiles/htmlFiles` property. For example, to display a hierarchical file name like `constant/students.ts`, you can use:
 
 ```html
 <demo
@@ -192,7 +196,7 @@ The corresponding rendering result is as follows:
 
 ### 🚨 Notice
 
-`vitepress-demo-plugin` internally treats `vueFiles/reactFiles/htmlFiles` as a string of type `string[] | Record<string, string>`, so you can only declare the value of `vueFiles/reactFiles/htmlFiles` directly, and cannot replace it by referencing variables.
+`vitepress-better-demo-plugin` internally treats `vueFiles/reactFiles/htmlFiles` as a string of type `string[] | Record<string, string>`, so you can only declare the value of `vueFiles/reactFiles/htmlFiles` directly, and cannot replace it by referencing variables.
 
 - ❌ Wrong
 
@@ -213,7 +217,7 @@ The corresponding rendering result is as follows:
 
 ## HTML Local Resource References
 
-To reference local resources via links in HTML tags, you need to place the resource files in the `public` directory and reference them using absolute paths. Here's an example from [demo-link.html](https://github.com/zh-lx/vitepress-demo-plugin/blob/main/packages/docs/demos/demo-link.html):
+To reference local resources via links in HTML tags, you need to place the resource files in the `public` directory and reference them using absolute paths. Here's an example from [demo-link.html](https://github.com/hezhengxu2018/vitepress-better-demo-plugin/blob/main/docs/demos/demo-link.html):
 
 ```html
 <!DOCTYPE html>
@@ -226,7 +230,7 @@ To reference local resources via links in HTML tags, you need to place the resou
     <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
-    <div class="title">Html demo with style link</div>
+    <div class="title">HTML demo with style link</div>
   </body>
 </html>
 ```
@@ -243,12 +247,13 @@ my-docs
 
 <demo html="demo-link.html" />
 
-## Write Html Way
+## HTML write modes
 
-For html type of demo, `vitepress-demo-plugin` has two ways to write the code, you can specify the way through the `htmlWriteWay` property:
+For HTML demos, `vitepress-better-demo-plugin` provides two methods for injecting HTML; choose one using the `htmlWriteWay` property:
 
-- `write` way: use `document.write` to write the html content, this way is more smooth, can avoid the problem of flashing when switching code in multiple demo mode.
-- `srcdoc` way: use `iframe.srcdoc` to write the html content, can avoid the console warning problem caused by the deprecation of `document.write`.
+- `write` mode: uses `document.write` to inject the HTML content. This approach can help avoid visual flashing when switching demos in multi-demo mode.
+- `srcdoc` mode: uses `iframe.srcdoc` to inject the HTML content. This avoids console warnings caused by the deprecation of `document.write`.
+
 
 Example:
 
@@ -259,10 +264,10 @@ Example:
 ## Style Isolation
 
 ::: tip Tip
-Style isolation is based on [raw](https://vitepress.dev/zh/guide/markdown#raw) provided by `vitepress` itself, but `vitepress-demo-plugin` has added `vp-raw` class name to `demo`, so you don't need to manually add `::: raw` or `vp-raw` class name, otherwise it will affect the style of the code block.
+Style isolation relies on the `raw` feature provided by VitePress. The `vitepress-better-demo-plugin` adds the `vp-raw` class to demo elements, so you don't need to manually add `::: raw` or `vp-raw`; doing so may affect the styling of code blocks.
 :::
 
-Some built-in CSS styles of vitepress may affect the display of demo. You can refer to the following methods to achieve style isolation:
+Some built-in CSS from VitePress may affect demo rendering. To isolate demo styles, you can follow the steps below:
 
 1. Install `postcss`:
 
@@ -277,7 +282,7 @@ pnpm add postcss -D
 2. Create a `postcss.config.mjs` file in the project root directory and add the following content:
 
 ```js
-import { postcssIsolateStyles } from 'vitepress'
+import { postcssIsolateStyles } from 'vitepress';
 
 export default {
   plugins: [
@@ -285,7 +290,7 @@ export default {
       includeFiles: [/vp-doc\.css/, /base\.css/],
     }),
   ],
-}
+};
 ```
 
 Taking the `table` component of `element-plus` as an example, the rendering result is as follows:
@@ -294,14 +299,14 @@ Taking the `table` component of `element-plus` as an example, the rendering resu
 
 ## Code Theme
 
-The code block display of `vitepress-demo-plugin` is based on [Shiki](https://shiki.style/), so you can use all themes supported by `Shiki`. For a list of themes, please refer to the [Shiki - Bundled Themes](https://shiki.style/themes#bundled-themes).
+The code block rendering in `vitepress-better-demo-plugin` uses [Shiki](https://shiki.style/), so all bundled Shiki themes are supported. For a list of themes, see [Shiki - Bundled Themes](https://shiki.style/themes#bundled-themes).
 
 You can specify the code block themes in light mode and dark mode respectively through `lightTheme` (default is `github-light`) and `darkTheme` (default is `github-dark`). Add the following code in `config.ts`:
 
 ```ts
-import path from 'node:path'
-import { defineConfig } from 'vitepress'
-import { vitepressDemoPlugin } from 'vitepress-demo-plugin'
+import { defineConfig } from 'vitepress';
+import { vitepressDemoPlugin } from 'vitepress-better-demo-plugin';
+import path from 'path';
 
 export default defineConfig({
   // other configs...
@@ -310,22 +315,22 @@ export default defineConfig({
       md.use(vitepressDemoPlugin, {
         lightTheme: 'github-light', // [!code ++]
         darkTheme: 'github-dark', // [!code ++]
-      })
+      });
     },
   },
-})
+});
 ```
 
 ## Internationalization
 
-You can configure the internationalization text of the code display component through the `locale` parameter. `locale` is a key-value pair object, where the `key` corresponds to the `lang` attribute configured in your `vitepress` multilingual settings, and the `value` can be either `'zh-CN' | 'en-US' | LocaleText`.
+You can configure the internationalization text for the code-display component through the `locale` parameter. `locale` is an object whose keys correspond to the `lang` attribute in your VitePress multilingual configuration, and whose values can be `'zh-CN' | 'en-US' | LocaleText`.
 
 Example:
 
 ```ts
-import path from 'node:path'
-import { defineConfig } from 'vitepress'
-import { vitepressDemoPlugin } from 'vitepress-demo-plugin'
+import { defineConfig } from 'vitepress';
+import { vitepressDemoPlugin } from 'vitepress-better-demo-plugin';
+import path from 'path';
 
 export default defineConfig({
   // other configs...
@@ -348,10 +353,10 @@ export default defineConfig({
       md.use(vitepressDemoPlugin, {
         // key corresponds to the lang above
         locale: {
-          'zh': 'zh-CN', // zh-CN represents using built-in Chinese text
+          zh: 'zh-CN', // zh-CN represents using built-in Chinese text
           'en-US': 'en-US', // en-US represents using built-in English text
           // Customize other languages:
-          'ja': {
+          ja: {
             openInStackblitz: 'Stackblitz で開く',
             openInCodeSandbox: 'Codesandbox で開く',
             openInGithub: 'GitHub で開く',
@@ -361,84 +366,10 @@ export default defineConfig({
             copyCode: 'コードをコピーする',
           },
         },
-      })
+      });
     },
   },
-})
+});
 ```
 
-For the `LocaleText` type definition that needs to be configured, please refer to [text.ts](https://github.com/zh-lx/vitepress-demo-plugin/blob/main/packages/plugin/src/locales/text.ts)
-
-## Custom Container Components
-
-The plugin's built-in container component styles might not align with your site's visual language. When you need full control, set the `wrapperComponentName` option to point to your own component and make sure it is registered before the plugin renders it. Check the [default container component](https://github.com/zh-lx/vitepress-demo-plugin/blob/main/packages/plugin/src/components/index.vue) for the props you need to implement.
-
-Example:
-
-```ts
-import { defineConfig } from 'vitepress'
-import { vitepressDemoPlugin } from 'vitepress-demo-plugin'
-
-export default defineConfig({
-  markdown: {
-    config(md) {
-      md.use(vitepressDemoPlugin, {
-        wrapperComponentName: 'vitepress-element-plus-demo-box'
-      })
-    },
-  },
-})
-```
-
-Then register the component with the same name inside your VitePress theme configuration, for example:
-
-```ts
-import Theme from 'vitepress/theme'
-import VitepressElementPlusDemoBox from './vitepress-element-plus-demo-box.vue'
-
-export default {
-  ...Theme,
-  enhanceApp({ app }) {
-    app.component('vitepress-element-plus-demo-box', VitepressElementPlusDemoBox)
-  },
-}
-```
-
-### Built-in Element Plus Style Container
-
-The plugin ships with an Element Plus–style container. You'll need to install `element-plus` in your project—it isn't bundled and stays an optional peer dependency.
-
-Theme setup example:
-
-```ts
-import { defineConfig } from 'vitepress'
-import { vitepressDemoPlugin } from 'vitepress-demo-plugin'
-import { VitepressEpDemoBox } from 'vitepress-demo-plugin/theme-ep'
-import Theme from 'vitepress/theme'
-import 'vitepress-demo-plugin/theme-ep/style.css'
-
-export default {
-  ...Theme,
-  enhanceApp({ app }) {
-    app.component('vitepress-ep-demo-box', VitepressEpDemoBox)
-  },
-}
-```
-
-VitePress configuration reference:
-
-```ts
-import { vitepressDemoPlugin } from 'vitepress-demo-plugin'
-
-// ···
-
-export const config = defineConfig({
-  markdown: {
-    config(md) {
-      md.use(vitepressDemoPlugin, {
-        wrapperComponentName: 'vitepress-ep-demo-box',
-      })
-    },
-  },
-})
-```
+For the `LocaleText` type definition that needs to be configured, please refer to [text.ts](https://github.com/hezhengxu2018/vitepress-better-demo-plugin/blob/main/plugin/src/types/index.ts)

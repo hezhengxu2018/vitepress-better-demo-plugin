@@ -1,35 +1,69 @@
+<script setup lang="ts">
+import { ElButton } from 'element-plus'
+</script>
+
 <template>
   <div class="mb-4">
-    <el-button>Default</el-button>
-    <el-button type="primary">Primary</el-button>
-    <el-button type="success">Success</el-button>
-    <el-button type="info">Info</el-button>
-    <el-button type="warning">Warning</el-button>
-    <el-button type="danger">Danger</el-button>
+    <ElButton>Default</ElButton>
+    <ElButton type="primary">
+      Primary
+    </ElButton>
+    <ElButton type="success">
+      Success
+    </ElButton>
+    <ElButton type="info">
+      Info
+    </ElButton>
+    <ElButton type="warning">
+      Warning
+    </ElButton>
+    <ElButton type="danger">
+      Danger
+    </ElButton>
   </div>
 
   <div class="mb-4">
-    <el-button plain>Plain</el-button>
-    <el-button type="primary" plain>Primary</el-button>
-    <el-button type="success" plain>Success</el-button>
-    <el-button type="info" plain>Info</el-button>
-    <el-button type="warning" plain>Warning</el-button>
-    <el-button type="danger" plain>Danger</el-button>
+    <ElButton plain>
+      Plain
+    </ElButton>
+    <ElButton type="primary" plain>
+      Primary
+    </ElButton>
+    <ElButton type="success" plain>
+      Success
+    </ElButton>
+    <ElButton type="info" plain>
+      Info
+    </ElButton>
+    <ElButton type="warning" plain>
+      Warning
+    </ElButton>
+    <ElButton type="danger" plain>
+      Danger
+    </ElButton>
   </div>
 
   <div class="mb-4">
-    <el-button round>Round</el-button>
-    <el-button type="primary" round>Primary</el-button>
-    <el-button type="success" round>Success</el-button>
-    <el-button type="info" round>Info</el-button>
-    <el-button type="warning" round>Warning</el-button>
-    <el-button type="danger" round>Danger</el-button>
+    <ElButton round>
+      Round
+    </ElButton>
+    <ElButton type="primary" round>
+      Primary
+    </ElButton>
+    <ElButton type="success" round>
+      Success
+    </ElButton>
+    <ElButton type="info" round>
+      Info
+    </ElButton>
+    <ElButton type="warning" round>
+      Warning
+    </ElButton>
+    <ElButton type="danger" round>
+      Danger
+    </ElButton>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ElButton } from 'element-plus';
-</script>
 
 <style>
 .mb-4 {

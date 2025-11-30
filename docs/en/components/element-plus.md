@@ -1,4 +1,4 @@
-# Element PLus
+# Element Plus
 
 This section will take `element-plus` as an example to teach how to import component libraries globally.
 
@@ -15,16 +15,16 @@ npm i element-plus
 Add the following configuration to the `.vitepress/theme/index.ts` file:
 
 ```ts
-import ElementPlus from 'element-plus' // Import component library
-import Theme from 'vitepress/theme'
-import 'element-plus/dist/index.css' // Import style
+import Theme from 'vitepress/theme';
+import ElementPlus from 'element-plus'; // Import component library
+import 'element-plus/dist/index.css'; // Import style
 
 export default {
-  ...Theme,
-  enhanceApp({ app }) {
-    app.use(ElementPlus) // Register component library
-  },
-}
+...Theme,
+enhanceApp({ app }) {
+app.use(ElementPlus); // Register component library
+},
+};
 ```
 
 ## Display Demo

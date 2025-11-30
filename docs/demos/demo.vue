@@ -1,26 +1,33 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const count = ref<number>(0)
+
+function increment() {
+  count.value++
+}
+
+function decrement() {
+  count.value--
+}
+</script>
+
 <template>
   <div class="container">
-    <div class="title">This is a Vue counter</div>
+    <div class="title">
+      This is a Vue counter
+    </div>
     <div class="btn-container">
-      <button class="btn" @click="increment">+1</button>
-      <button class="btn" @click="decrement">-1</button>
+      <button class="btn" @click="increment">
+        +1
+      </button>
+      <button class="btn" @click="decrement">
+        -1
+      </button>
     </div>
     <div>Current count: {{ count }}</div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue';
-const count = ref<number>(0);
-
-const increment = () => {
-  count.value++;
-};
-
-const decrement = () => {
-  count.value--;
-};
-</script>
 
 <style scoped>
 .container {

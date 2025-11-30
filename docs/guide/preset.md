@@ -2,7 +2,7 @@
 
 ## 跳转在线代码编辑平台
 
-`vitepress-demo-plugin` 支持跳转至流行的在线代码编辑平台，如 Stackblitz，Codesandbox 等，有局部开启和全局开启两种方式。
+`vitepress-better-demo-plugin` 支持跳转至流行的在线代码编辑平台，如 Stackblitz，Codesandbox 等，有局部开启和全局开启两种方式。
 
 ### 局部开启
 
@@ -21,8 +21,8 @@
 在 `.vitepress/config.ts` 中添加如下配置，可对所有 `<demo />` 组件生效。
 
 ```ts
-import { defineConfig } from 'vitepress'
-import { vitepressDemoPlugin } from 'vitepress-demo-plugin'
+import { defineConfig } from 'vitepress';
+import { vitepressDemoPlugin } from 'vitepress-better-demo-plugin';
 
 export default defineConfig({
   // other configs...
@@ -35,15 +35,14 @@ export default defineConfig({
         codesandbox: { // [!code ++]
           show: true, // [!code ++]
         }, // [!code ++]
-      })
+      });
     },
   },
-})
+});
 ```
-
 ## 预设文件及代码
 
-`vitepress-demo-plugin` 预设了一些文件配置，让你多数情况下不需要单独配置文件就能够打开 `stackblitz/codesandbox` 等平台去预览你的 `<demo />`。不同平台及 demo 类型预设的文件及代码如下：
+`vitepress-better-demo-plugin` 预设了一些文件配置，让你多数情况下不需要单独配置文件就能够打开 `stackblitz/codesandbox` 等平台去预览你的 `<demo />`。不同平台及 demo 类型预设的文件及代码如下：
 
 ::: details 展开查看 stackblitz 平台 Vue 预设文件及代码
 ::: code-group
@@ -53,11 +52,11 @@ export default defineConfig({
 ```
 
 ```ts [src/main.ts]
-import { createApp } from 'vue'
-import Demo from './Demo.vue'
+import { createApp } from "vue";
+import Demo from "./Demo.vue";
 
-const app = createApp(Demo)
-app.mount('#app')
+const app = createApp(Demo);
+app.mount("#app");
 ```
 
 ```json [.stackblitzrc]
@@ -88,7 +87,7 @@ app.mount('#app')
     "serve": "vite preview"
   },
   "dependencies": {
-    "vue": "latest"
+    "vue": "latest",
     // 会根据你 demo 中的 import 依赖自动添加
   },
   "devDependencies": {
@@ -129,13 +128,12 @@ app.mount('#app')
 ```
 
 ```ts [vite.config.js]
-import vue from '@vitejs/plugin-vue'
-import vueJsx from '@vitejs/plugin-vue-jsx'
-import { defineConfig } from 'vite'
-
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import vueJsx from '@vitejs/plugin-vue-jsx';
 export default defineConfig({
   plugins: [vue(), vueJsx()],
-})
+});
 ```
 
 :::
@@ -229,12 +227,11 @@ root.render(<Demo />);
 ```
 
 ```ts [vite.config.js]
-import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
-
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
-})
+});
 ```
 
 :::
@@ -256,11 +253,11 @@ export default defineConfig({
 ```
 
 ```ts [main.ts]
-import { createApp } from 'vue'
-import Demo from './Demo.vue'
+import { createApp } from "vue";
+import Demo from "./Demo.vue";
 
-const app = createApp(Demo)
-app.mount('#app')
+const app = createApp(Demo);
+app.mount("#app");
 ```
 
 ```html [index.html]
@@ -403,17 +400,17 @@ root.render(<Demo />);
 
 ## 自定义文件及代码
 
-`vitepress-demo-plugin` 支持自定义文件及代码，你可以在 `.vitepress/config.ts` 中添加 `templates` 配置，来替换预设文件的代码或者添加新的文件。`templates` 的类型如下：
+`vitepress-better-demo-plugin` 支持自定义文件及代码，你可以在 `.vitepress/config.ts` 中添加 `templates` 配置，来替换预设文件的代码或者添加新的文件。`templates` 的类型如下：
 
 ```ts
-interface Template {
-  scope: 'global' | 'vue' | 'react' | 'html' | string
+type Template = {
+  scope: 'global' | 'vue' | 'react' | 'html' | string;
   files: {
-    [filename: string]: string // 代码内容
-  }
+    [filename: string]: string; // 代码内容
+  };
 }
 
-type Templates = Template[]
+type Templates = Template[];
 ```
 
 ### 全类别生效
@@ -421,8 +418,8 @@ type Templates = Template[]
 当设置 `scope` 为 `global` 时，表示该模板对所有类型的 demo 组件都生效。以 stackblitz 平台为例：
 
 ```ts
-import { defineConfig } from 'vitepress'
-import { vitepressDemoPlugin } from 'vitepress-demo-plugin'
+import { defineConfig } from 'vitepress';
+import { vitepressDemoPlugin } from 'vitepress-better-demo-plugin';
 
 export default defineConfig({
   // other configs...
@@ -443,10 +440,10 @@ export default defineConfig({
             }, // [!code ++]
           ], // [!code ++]
         }
-      })
+      });
     },
   }
-})
+});
 ```
 
 ### 单类别生效
@@ -454,8 +451,8 @@ export default defineConfig({
 当设置 `scope` 为 `vue/react/html` 时，表示该模板仅对相应类型的 demo 组件生效。以下面的 demo 为例，仅对 Vue 类型的 demo 组件生效：
 
 ```ts
-import { defineConfig } from 'vitepress'
-import { vitepressDemoPlugin } from 'vitepress-demo-plugin'
+import { defineConfig } from 'vitepress';
+import { vitepressDemoPlugin } from 'vitepress-better-demo-plugin';
 
 export default defineConfig({
   // other configs...
@@ -483,10 +480,10 @@ export default defineConfig({
             }, // [!code ++]
           ]
         }
-      })
+      });
     },
   }
-})
+});
 ```
 
 ### 自定义 demo 生效范围
@@ -494,8 +491,8 @@ export default defineConfig({
 你也可以自定义 `scope` 的名称，表示该模板仅对相应类型的 demo 组件生效。例如：
 
 ```ts
-import { defineConfig } from 'vitepress'
-import { vitepressDemoPlugin } from 'vitepress-demo-plugin'
+import { defineConfig } from 'vitepress';
+import { vitepressDemoPlugin } from 'vitepress-better-demo-plugin';
 
 export default defineConfig({
   // other configs...
@@ -514,12 +511,12 @@ export default defineConfig({
                 'index.html': `<!DOCTYPE html><html><body><div id="app"></div></body><script src="print.js"></script></html>`,
               },
             },
-            {
+            { 
               scope: 'vue', // 仅针对 Vue 类型的 demo 组件生效
-              files: {
+              files: { 
                 // 替换预设的 main.ts 文件
-                'src/main.ts': `import { createApp } from "vue";\nimport Demo from "./Demo.vue";\nconst app = createApp(Demo);\napp.mount("#app");`,
-              }
+                'src/main.ts': `import { createApp } from "vue";\nimport Demo from "./Demo.vue";\nconst app = createApp(Demo);\napp.mount("#app");`, 
+              } 
             },
             { // [!code ++]
               scope: 'myScope', // 仅针对 scope demo 组件生效 // [!code ++]
@@ -530,10 +527,10 @@ export default defineConfig({
             }, // [!code ++]
           ]
         }
-      })
+      });
     },
   }
-})
+});
 ```
 
 现在你定义了一个名为 `myScope` 的模板，你可以通过 `scope` 属性来让该模版对特定的 demo 组件生效。

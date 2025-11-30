@@ -1,17 +1,17 @@
-import styled from '@emotion/styled'
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import styled from '@emotion/styled';
 
 const Container = styled.div`
   font-family: 'PingFang SC', 'Microsoft YaHei', 'SimHei', 'SimSun',
     'sans-serif';
   font-size: 14px;
   line-height: 20px;
-`
+`;
 const Title = styled.div`
   font-size: 24px;
   font-weight: 600;
   line-height: 32px;
-`
+`;
 
 const Button = styled.button`
   cursor: pointer;
@@ -23,23 +23,23 @@ const Button = styled.button`
   line-height: 20px;
   padding: 4px 16px;
   margin: 12px 0;
-`
+`;
 const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
   column-gap: 24px;
-`
+`;
 
 export default function Demo() {
-  const [count, setCount] = useState<number>(0)
+  const [count, setCount] = useState<number>(0);
 
   const increment: () => void = () => {
-    setCount(count + 1)
-  }
+    setCount(count + 1);
+  };
 
   const decrement: () => void = () => {
-    setCount(count - 1)
-  }
+    setCount(count - 1);
+  };
 
   return (
     <Container>
@@ -48,10 +48,7 @@ export default function Demo() {
         <Button onClick={increment}>+1</Button>
         <Button onClick={decrement}>-1</Button>
       </ButtonContainer>
-      <div>
-        Current count:
-        {count}
-      </div>
+      <div>Current count: {count}</div>
     </Container>
-  )
+  );
 }

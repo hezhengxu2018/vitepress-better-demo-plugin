@@ -1,26 +1,42 @@
 # 快速开始
 
+::: tip 提示
+本章节文档与`vitepress-demo-plugin`除了依赖名称不同外完全一致。如果你想迁移依赖简单的搜索替换即可。
+:::
+
 ## 安装
 
 选择你喜欢的包管理器进行安装：
+
+```bash
+npm install vitepress-better-demo-plugin -D
+```
+
+```bash
+yarn add vitepress-better-demo-plugin -D
+```
+
+```bash
+pnpm add vitepress-better-demo-plugin -D
+```
 
 ## 引入插件
 
 在 `.vitepress/config.ts` 中添加如下代码以引入 `vitepressDemoPlugin` 插件：
 
 ```ts
-import path from 'node:path'
-import { defineConfig } from 'vitepress'
-import { vitepressDemoPlugin } from 'vitepress-demo-plugin' // [!code ++]
+import { defineConfig } from 'vitepress';
+import { vitepressDemoPlugin } from 'vitepress-better-demo-plugin'; // [!code ++]
+import path from 'path';
 
 export default defineConfig({
   // other configs...
   markdown: { // [!code ++]
     config(md) { // [!code ++]
-      md.use(vitepressDemoPlugin) // [!code ++]
+      md.use(vitepressDemoPlugin); // [!code ++]
     }, // [!code ++]
   }, // [!code ++]
-})
+});
 ```
 
 ## 展示 Vue Demo
@@ -55,7 +71,6 @@ export default defineConfig({
 ```bash
 npm install react react-dom -D
 ```
-
 :::
 
 通过 `<demo react="xxx/path" />` 指定一个 `.jsx/.tsx` 文件的路径，渲染该 react 组件并展示其代码：
@@ -130,22 +145,22 @@ npm install react react-dom -D
 ```html
 <demo
   vue="../demos/demo.vue"
-  github="https://github.com/zh-lx/vitepress-demo-plugin/blob/main/packages/docs/demos/demo.vue"
-/>
+  github="https://github.com/hezhengxu2018/vitepress-better-demo-plugin/blob/main/docs/demos/demo.vue" 
+/>  
 ```
 
 其对应的渲染效果如下：
 
 <demo
   vue="../demos/demo.vue"
-  github="https://github.com/zh-lx/vitepress-demo-plugin/blob/main/packages/docs/demos/demo.vue"
+  github="https://github.com/hezhengxu2018/vitepress-better-demo-plugin/blob/main/docs/demos/demo.vue" 
 />
 
 Gitlab 的使用方式和 Github 一致，只需将 `github` 属性替换为 `gitlab` 属性即可。
 
 ## SSG
 
-为了避免用户组件中使用了 `window`、`document` 等浏览器环境变量，`vitepress-demo-plugin` 默认会使用 `<ClientOnly>` 组件包装用户的组件。然而，这会导致用户的组件无法参与静态编译，从而组件在页面的加载速度变慢。
+为了避免用户组件中使用了 `window`、`document` 等浏览器环境变量，`vitepress-better-demo-plugin` 默认会使用 `<ClientOnly>` 组件包装用户的组件。然而，这会导致用户的组件无法参与静态编译，从而组件在页面的加载速度变慢。
 
 如果你确定你的组件中没有使用到 `window`、`document` 等浏览器环境变量且仅是用了 vue 组件，你可以通过 `ssg` 属性来关闭 `<ClientOnly>` 组件的包装，从而加快组件的加载速度。
 
@@ -153,7 +168,7 @@ Gitlab 的使用方式和 Github 一致，只需将 `github` 属性替换为 `gi
 <demo
   vue="../demos/demo.vue"
   ssg="true"
-/>
+/>  
 ```
 
 其对应的渲染效果如下：

@@ -66,6 +66,15 @@ export default defineConfig({
         text: '指南',
         items: [
           { text: '快速开始', link: '/guide/start' },
+          { text: '进阶配置', link: '/guide/advance' },
+          { text: '第三方平台', link: '/guide/preset' },
+        ],
+      },
+      {
+        text: '组件库展示',
+        items: [
+          { text: 'Ant Design', link: '/components/antd' },
+          { text: 'Element Plus', link: '/components/element-plus' },
         ],
       },
     ],
@@ -78,11 +87,45 @@ export default defineConfig({
         link: 'https://github.com/hezhengxu2018/vitepress-better-demo-plugin',
       },
     ],
+    footer: {
+      message: 'Released under the MIT License.',
+    },
   },
   locales: {
     root: {
       label: '简体中文',
       lang: 'zh-CN',
+    },
+    en: {
+      label: 'English',
+      lang: 'en-US',
+      link: '/en',
+      themeConfig: {
+        sidebar: [
+          {
+            text: 'Guide',
+            items: [
+              { text: 'Quick Start', link: '/en/guide/start' },
+              { text: 'Advanced Configuration', link: '/en/guide/advance' },
+              { text: 'Third Party Platform', link: '/en/guide/preset' },
+            ],
+          },
+          {
+            text: 'Component Library',
+            items: [
+              { text: 'Ant Design', link: '/en/components/antd' },
+              { text: 'Element Plus', link: '/en/components/element-plus' },
+            ],
+          },
+        ],
+        outline: [2, 4],
+        socialLinks: [
+          {
+            icon: 'github',
+            link: 'https://github.com/hezhengxu2018/vitepress-better-demo-plugin',
+          },
+        ],
+      },
     },
   },
   markdown: {

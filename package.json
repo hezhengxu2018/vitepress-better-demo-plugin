@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "pnpm -C ./docs docs:dev",
     "build": "pnpm -r build",
+    "build:doc": "pnpm -C ./docs docs:build",
     "lint": "eslint --fix",
     "commit": "czg",
     "lint-staged": "lint-staged",

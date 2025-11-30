@@ -1,19 +1,21 @@
 # Quick Start
 
+This section of the documentation is identical to `vitepress-demo-plugin`.
+
 ## Installation
 
 Choose your preferred package manager for installation:
 
 ```bash
-npm install vitepress-demo-plugin -D
+npm install vitepress-better-demo-plugin -D
 ```
 
 ```bash
-yarn add vitepress-demo-plugin -D
+yarn add vitepress-better-demo-plugin -D
 ```
 
 ```bash
-pnpm add vitepress-demo-plugin -D
+pnpm add vitepress-better-demo-plugin -D
 ```
 
 ## Import Plugin
@@ -21,23 +23,23 @@ pnpm add vitepress-demo-plugin -D
 Add the following code to `.vitepress/config.ts` to import the `vitepressDemoPlugin`:
 
 ```ts
-import path from 'node:path'
-import { defineConfig } from 'vitepress'
-import { vitepressDemoPlugin } from 'vitepress-demo-plugin' // [!code ++]
+import { defineConfig } from 'vitepress';
+import { vitepressDemoPlugin } from 'vitepress-better-demo-plugin'; // [!code ++]
+import path from 'path';
 
 export default defineConfig({
   // other configs...
   markdown: { // [!code ++]
     config(md) { // [!code ++]
-      md.use(vitepressDemoPlugin) // [!code ++]
+      md.use(vitepressDemoPlugin); // [!code ++]
     }, // [!code ++]
   }, // [!code ++]
-})
+});
 ```
 
 ## Vue Demo
 
-You can set path of `.vue` file by `<demo vue="xxx/path" />` in `.md` file, render this vue component and display source code.
+You can set the path of a `.vue` file using `<demo vue="xxx/path" />` in an `.md` file; this renders the Vue component and displays its source code.
 
 ```html
 <demo vue="../demos/demo.vue" />
@@ -47,9 +49,9 @@ The corresponding rendering result is as follows:
 
 <demo vue="../demos/demo.vue" />
 
-## Html Demo
+## HTML Demo
 
-You can set path of `.html` file by `<demo html="xxx/path" />` in `.md` file, render this html file and display source code.
+You can set the path of an `.html` file using `<demo html="xxx/path" />` in a `.md` file; this renders the HTML and displays its source code.
 
 ```html
 <demo html="../demos/demo.html" />
@@ -62,14 +64,15 @@ The corresponding rendering result is as follows:
 ## React Demo
 
 ::: tip Tip
-If you want to display React Demo in your vitepress site, you need install related decencies by command below
+If you want to display React demos in your VitePress site, install the required dependencies using the following command
+
 
 ```bash
 npm install react react-dom -D
 ```
 :::
 
-You can set path of `.jsx/.tsx` file by `<demo react="xxx/path" />` in `.md` file, render this html file and display source code.
+You can set the path of a `.jsx`/`.tsx` file using `<demo react="xxx/path" />` in an `.md` file; this renders the React component and displays its source code.
 
 ```html
 <demo react="../demos/demo.tsx" />
@@ -84,7 +87,7 @@ The corresponding rendering result is as follows:
 ## Mixed Demo
 
 ::: tip Tip
-Same as above, if you want to display React Demo in your vitepress site, you need to execute the following command to install the corresponding dependencies:
+Same as above, to display React demos in your VitePress site, run the following command to install the required dependencies:
 
 ```bash
 npm install react react-dom -D
@@ -92,7 +95,7 @@ npm install react react-dom -D
 
 :::
 
-You can specify multiple `vue/react/html` in `<demo />` at the same time to display demos with different syntaxes in one block.
+You can specify multiple syntaxes (e.g. `vue`, `react`, `html`) in a single `<demo />` to display different demo formats in one block.
 
 ```html
 <demo
@@ -112,7 +115,7 @@ The corresponding rendering result is as follows:
 
 ## Title And Description
 
-Set demo title and description by `title` 和 `description`:
+Set the demo title and description using `title` and `description`:
 
 ```html
 <demo
@@ -134,37 +137,37 @@ The corresponding rendering result is as follows:
   description="This is an example of a mixed demo. You can use title and description to specify the title and description of the demo."
 />
 
-## Open Github And Gitlab
+## Open on GitHub and GitLab
 
-You can add link by `github` and `gitlab` in `<demo />`. It will navigate to corresponding address.
+You can add a `github` or `gitlab` link to `<demo />` that navigates to the corresponding address.
 
 ```html
 <demo
   vue="../demos/demo.vue"
-  github="https://github.com/zh-lx/vitepress-demo-plugin/blob/main/packages/docs/demos/demo.vue"
-/>
+  github="https://github.com/hezhengxu2018/vitepress-better-demo-plugin/blob/main/docs/demos/demo.vue" 
+/>  
 ```
 
 The corresponding rendering result is as follows:
 
 <demo
   vue="../demos/demo.vue"
-  github="https://github.com/zh-lx/vitepress-demo-plugin/blob/main/packages/docs/demos/demo.vue"
+  github="https://github.com/hezhengxu2018/vitepress-better-demo-plugin/blob/main/docs/demos/demo.vue" 
 />
 
 For GitLab, the usage is the same as GitHub. Simply replace `github` with `gitlab`.
 
 ## SSG
 
-To avoid using `window`、`document` 等 browser environment variables in user components, `vitepress-demo-plugin` defaults to using the `<ClientOnly>` component to wrap user components. However, this will cause the user's components to not participate in static compilation, thus slowing down the loading speed of the components on the page.
+To avoid using `window`, `document`, or other browser globals in user components, `vitepress-better-demo-plugin` wraps user components with the `<ClientOnly>` component by default. However, this prevents the components from being included in static rendering and may slow down their loading speed.
 
-If you are sure that your components do not use `window`、`document` etc. browser environment variables and only use vue components, you can close the `<ClientOnly>` component's packaging by setting the `ssg` attribute, thus speeding up the loading speed of the components.
+If you are sure your components do not use `window`, `document`, or other browser globals and only use Vue components, you can disable the `<ClientOnly>` wrapper by setting the `ssg` attribute to improve loading performance.
 
 ```html
 <demo
   vue="../demos/demo.vue"
   ssg="true"
-/>
+/>  
 ```
 
 The corresponding rendering result is as follows:

@@ -1,13 +1,5 @@
-<template>
-  <el-table :data="tableData" border stripe style="width: 100%">
-    <el-table-column prop="date" label="Date" width="180" />
-    <el-table-column prop="name" label="Name" width="180" />
-    <el-table-column prop="address" label="Address" />
-  </el-table>
-</template>
-
 <script lang="ts" setup>
-import { ElTable, ElTableColumn } from 'element-plus';
+import { ElTable, ElTableColumn } from 'element-plus'
 
 const tableData = [
   {
@@ -30,5 +22,13 @@ const tableData = [
     name: 'Tom',
     address: 'No. 189, Grove St, Los Angeles',
   },
-];
+]
 </script>
+
+<template>
+  <ElTable :data="tableData" border stripe style="width: 100%">
+    <ElTableColumn prop="date" label="Date" width="180" />
+    <ElTableColumn prop="name" label="Name" width="180" />
+    <ElTableColumn prop="address" label="Address" />
+  </ElTable>
+</template>

@@ -15,16 +15,16 @@ npm i element-plus
 在 `.vitepress/theme/index.ts` 文件中添加如下配置:
 
 ```ts
-import ElementPlus from 'element-plus' // 引入组件库
-import Theme from 'vitepress/theme'
-import 'element-plus/dist/index.css' // 引入样式
+import Theme from 'vitepress/theme';
+import ElementPlus from 'element-plus'; // 引入组件库
+import 'element-plus/dist/index.css'; // 引入样式
 
 export default {
   ...Theme,
   enhanceApp({ app }) {
-    app.use(ElementPlus) // 注册组件库
+    app.use(ElementPlus); // 注册组件库
   },
-}
+};
 ```
 
 ## 展示 Demo

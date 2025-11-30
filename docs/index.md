@@ -26,6 +26,6 @@ features:
     details: 在Vitepress中配置的shiki也会用于本插件中的代码。
 ---
 
-## 介绍
-
-本插件fork自`vitepress-demo-plugin`的1.5.0版本，在此基础上添加了上述特性，除此之外没有新增额外的功能。如果不需要这些特性，或者更倾向于使用独立的shiki渲染也可以使用[vitepress-demo-plugin](https://github.com/zh-lx/vitepress-demo-plugin)
+::: tip 提示
+本插件fork自`vitepress-demo-plugin`的1.5.0版本。如果不需要这些特性，或者倾向于使用独立配置的shiki渲染也可以使用原版[vitepress-demo-plugin](https://github.com/zh-lx/vitepress-demo-plugin)
+:::
