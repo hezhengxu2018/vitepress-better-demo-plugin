@@ -65,6 +65,8 @@ function extractFlag(content: string, regex: RegExp): boolean {
  * @return string
  */
 export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any, config?: VitepressDemoBoxConfig) {
+  const demoIndexKey = '__vp_demo_index__'
+  const demoIndex = (mdFile[demoIndexKey] = (mdFile[demoIndexKey] || 0) + 1)
   const {
     demoDir,
     tab = {},
@@ -237,7 +239,7 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
     )
   }
 
-  const placeholderVisibleKey = `__placeholder_visible_key__`
+  const placeholderVisibleKey = `__placeholder_visible_${componentName}_${demoIndex}__`
 
   // 控制 placeholder 的显示
   injectComponentImportScript(
