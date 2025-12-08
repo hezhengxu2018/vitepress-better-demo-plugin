@@ -95,3 +95,5 @@ export function createDemoContainer(md: MarkdownRenderer, pluginConfig?: Vitepre
 }
 
 export type { VitepressDemoBoxConfig } from '../types'
+
+export { useDemoBox } from '@/shared/composables/useDemoBox'

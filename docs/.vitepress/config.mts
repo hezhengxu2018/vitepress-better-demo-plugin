@@ -83,6 +83,7 @@ export default defineConfig({
           { text: 'Typescript 类型提示', link: '/what-is-new/typescript-hint' },
           { text: 'Vitepress的代码染色', link: '/what-is-new/vitepress-code-renderer' },
           { text: '多主题支持', link: '/what-is-new/multiple-themes' },
+          { text: '开发自己的容器', link: '/what-is-new/develop-your-own-wrapper' },
           { text: 'Markdown-It-Container 支持', link: '/what-is-new/markdown-it-container-support' },
         ],
       },
