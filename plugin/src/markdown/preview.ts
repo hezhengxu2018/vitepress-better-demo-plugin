@@ -10,8 +10,6 @@ import {
   isPlainObject,
   parseDemoAttributes,
   parseFilesAttribute,
-  toBoolean,
-  toPathAttr,
   toStringAttr,
 } from './utils'
 
@@ -28,137 +26,67 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
   const demoIndex = (mdFile[demoIndexKey] = (mdFile[demoIndexKey] || 0) + 1)
   const {
     demoDir,
-    tab = {},
     stackblitz = { show: false },
     codesandbox = { show: false },
-    codeplayer = { show: false },
     wrapperComponentName = 'vitepress-demo-box',
     placeholderComponentName = 'vitepress-demo-placeholder',
     autoImportWrapper = true,
   } = config || {}
-  let {
-    order = 'vue,react,html',
-    visible = true,
-    select = (tab.order || 'vue,react,html').split(',')[0] || 'vue',
-  } = tab
-
-  const componentProps: DefaultProps = {
-    vue: '',
-    title: '',
-    description: '',
-    html: '',
-    react: '',
-  }
 
   const attributes = parseDemoAttributes(token.content)
   const {
-    title: titleAttr,
-    description: descriptionAttr,
-    vue: vueAttr,
-    html: htmlAttr,
-    react: reactAttr,
-    order: orderAttr,
-    select: selectAttr,
-    visible: visibleAttr,
-    github: githubAttr,
-    gitlab: gitlabAttr,
+    vue: vuePathValue,
+    html: htmlPathValue,
+    react: reactPathValue,
     stackblitz: stackblitzAttr,
     codesandbox: codesandboxAttr,
-    codeplayer: codeplayerAttr,
     vueFiles: vueFilesAttr,
     reactFiles: reactFilesAttr,
     htmlFiles: htmlFilesAttr,
     wrapperComponentName: wrapperComponentNameAttr,
     placeholderComponentName: placeholderComponentNameAttr,
-    scope: scopeAttr,
-    ssg: ssgAttr,
-    htmlWriteWay: htmlWriteWayAttr,
-    background: backgroundAttr,
+    ssg: ssgValue,
   } = attributes
 
-  const titleValue = toStringAttr(titleAttr)
-  const descriptionValue = toStringAttr(descriptionAttr)
-  const vuePathValue = toPathAttr(vueAttr)
-  const htmlPathValue = toPathAttr(htmlAttr)
-  const reactPathValue = toPathAttr(reactAttr)
-  const orderValue = toStringAttr(orderAttr)
-  const selectValue = toStringAttr(selectAttr)
-  const githubValue = toStringAttr(githubAttr)
-  const gitlabValue = toStringAttr(gitlabAttr)
   const wrapperComponentNameValue = toStringAttr(wrapperComponentNameAttr)
   const placeholderComponentNameValue = toStringAttr(placeholderComponentNameAttr)
-  const scopeValue = toStringAttr(scopeAttr)
-  const ssgValue = toBoolean(ssgAttr)
-  const htmlWriteWayValue = toStringAttr(htmlWriteWayAttr, 'write') || 'write'
-  const backgroundValue = toStringAttr(backgroundAttr)
   const wrapperName = wrapperComponentNameValue || wrapperComponentName
   const placeholderName = placeholderComponentNameValue || placeholderComponentName
   const mdFilePath = mdFile.realPath ?? mdFile.path
   const dirPath = demoDir || path.dirname(mdFilePath)
 
-  if (orderValue)
-    order = orderValue
-  if (selectValue)
-    select = selectValue
-  if ('visible' in attributes)
-    visible = toBoolean(visibleAttr, visible)
-  const github = githubValue || ''
-  const gitlab = gitlabValue || ''
   applyPlatformValue(stackblitz, stackblitzAttr)
   applyPlatformValue(codesandbox, codesandboxAttr)
-  applyPlatformValue(codeplayer, codeplayerAttr)
 
-  if (vuePathValue) {
-    componentProps.vue = path
-      .join(dirPath, vuePathValue)
-      .replace(/\\/g, '/')
-  }
-
-  if (htmlPathValue) {
-    componentProps.html = path
-      .join(dirPath, htmlPathValue)
-      .replace(/\\/g, '/')
-  }
-  if (reactPathValue) {
-    componentProps.react = path
-      .join(dirPath, reactPathValue)
-      .replace(/\\/g, '/')
-  }
-
-  componentProps.title = titleValue || ''
-  componentProps.description = descriptionValue || ''
-
-  const componentVuePath = componentProps.vue
+  const componentVuePath = vuePathValue
     ? path
         .resolve(
           demoDir || path.dirname(mdFilePath),
-          vuePathValue || '.',
+          vuePathValue as string || '.',
         )
         .replace(/\\/g, '/')
     : ''
-  const componentHtmlPath = componentProps.html
+  const componentHtmlPath = htmlPathValue
     ? path
         .resolve(
           demoDir || path.dirname(mdFilePath),
-          htmlPathValue || '.',
+          htmlPathValue as string || '.',
         )
         .replace(/\\/g, '/')
     : ''
-  const componentReactPath = componentProps.react
+  const componentReactPath = reactPathValue
     ? path
         .resolve(
           demoDir || path.dirname(mdFilePath),
-          reactPathValue || '.',
+          reactPathValue as string || '.',
         )
         .replace(/\\/g, '/')
     : ''
-
-  // 组件名
 
   const absolutePath = path
     .resolve(
       dirPath,
-      componentProps.vue || componentProps.react || componentProps.html || '.',
+      componentVuePath || componentHtmlPath || componentReactPath || '.',
     )
     .replace(/\\/g, '/')
 
@@ -178,7 +106,7 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
   injectComponentImportScript(mdFile, 'vue', '{ ref, shallowRef, onMounted }')
 
   // 注入组件导入语句
-  if (componentProps.vue) {
+  if (componentVuePath) {
     injectComponentImportScript(
       mdFile,
       componentVuePath,
@@ -186,7 +114,7 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
       ssgValue ? undefined : 'dynamicImport',
     )
   }
-  if (componentProps.react) {
+  if (componentReactPath) {
     injectComponentImportScript(
       mdFile,
       'react',
@@ -216,30 +144,30 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
   )
 
   // 组件代码，动态引入以便实时更新
-  const htmlCodeTempVariable = componentProps.html
+  const htmlCodeTempVariable = componentHtmlPath
     ? `TempCodeHtml${componentName}`
     : `''`
-  const reactCodeTempVariable = componentProps.react
+  const reactCodeTempVariable = componentReactPath
     ? `TempCodeReact${componentName}`
     : `''`
-  const vueCodeTempVariable = componentProps.vue
+  const vueCodeTempVariable = componentVuePath
     ? `TempCodeVue${componentName}`
     : `''`
-  if (componentProps.html) {
+  if (componentHtmlPath) {
     injectComponentImportScript(
       mdFile,
       `${componentHtmlPath}?raw`,
       htmlCodeTempVariable,
     )
   }
-  if (componentProps.react) {
+  if (componentReactPath) {
     injectComponentImportScript(
       mdFile,
       `${componentReactPath}?raw`,
       reactCodeTempVariable,
     )
   }
-  if (componentProps.vue) {
+  if (componentVuePath) {
     injectComponentImportScript(
       mdFile,
       `${componentVuePath}?raw`,
@@ -414,42 +342,28 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
   ${ssgValue ? '' : '<ClientOnly>'}
     <${wrapperName}
       v-show="!${placeholderVisibleKey}"
-      title="${componentProps.title}"
-      description="${componentProps.description}"
-      locale="${locale}"
-      select="${select}"
-      order="${order}"
-      github="${github}"
-      gitlab="${gitlab}"
-      theme="${config?.theme || ''}"
-      lightTheme="${config?.lightTheme || ''}"
-      darkTheme="${config?.darkTheme || ''}"
       stackblitz="${encodeURIComponent(JSON.stringify(stackblitz))}"
       codesandbox="${encodeURIComponent(JSON.stringify(codesandbox))}"
-      codeplayer="${encodeURIComponent(JSON.stringify(codeplayer))}"
       files="${encodeURIComponent(JSON.stringify(files))}"
       codeHighlights="${encodedCodeHighlights}"
-      scope="${scopeValue || ''}"
-      htmlWriteWay="${htmlWriteWayValue}"
-      background="${backgroundValue}"
-      :visible="!!${visible}"
+      locale="${locale}"
       @mount="() => { ${placeholderVisibleKey} = false; }"
       ${
-        componentProps.html
+        componentHtmlPath
           ? `
             :htmlCode="${htmlCodeTempVariable}"
             `
           : ''
       }
       ${
-        componentProps.vue
+        componentVuePath
           ? `
             :vueCode="${vueCodeTempVariable}"
             `
           : ''
       }
       ${
-        componentProps.react
+        componentReactPath
           ? `
             :reactCode="${reactCodeTempVariable}"
             :reactComponent="${reactComponentName}"
@@ -461,7 +375,7 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
       }
       >
       ${
-        componentProps.vue
+        componentVuePath
           ? `
             <template v-if="${componentName}" #vue>
               <${componentName} @vue:mounted="() => { ${placeholderVisibleKey} = false; }"></${componentName}>

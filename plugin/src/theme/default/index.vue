@@ -18,8 +18,8 @@ import { MessageService } from './message'
 import Tooltip from './tooltip/index.vue'
 
 const props = withDefaults(defineProps<VitepressDemoBoxProps>(), {
-  title: '标题',
-  description: '描述内容',
+  title: '',
+  description: '',
   visible: true,
   select: COMPONENT_TYPE.VUE,
   order: 'vue,react,html',
@@ -111,7 +111,7 @@ function handleSourceLeave(el: Element) {
         v-if="props.description || (!props.title && !props.description)"
         :class="[ns.bem('description', 'split-line')]"
       />
-      <div v-if="tabs.length > 1 && visible" :class="[ns.bem('lang-tabs')]">
+      <div v-if="tabs.length > 1" :class="[ns.bem('lang-tabs')]">
         <div
           v-for="tab in tabs"
           :key="tab"
@@ -305,6 +305,8 @@ function handleSourceLeave(el: Element) {
   justify-content: center;
   column-gap: 16px;
   overflow-x: auto;
+  background-color: var(--vp-c-bg);
+  font-size: var(--vp-code-font-size);
 
   .#{$defaultPrefix}-tab {
     cursor: pointer;
@@ -318,9 +320,5 @@ function handleSourceLeave(el: Element) {
 
 .#{$defaultPrefix}-lang-tabs {
   border-bottom: 1px dashed var(--vp-c-border);
-}
-
-.#{$defaultPrefix}-file-tabs {
-  border-top: 1px dashed var(--vp-c-border);
 }
 </style>

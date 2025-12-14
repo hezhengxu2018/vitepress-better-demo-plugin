@@ -28,9 +28,6 @@ export function useDemoBox(
   const codesandbox = computed<Platform>(() => {
     return JSON.parse(decodeURIComponent(props.codesandbox || '{}'))
   })
-  const codeplayer = computed<Platform>(() => {
-    return JSON.parse(decodeURIComponent(props.codeplayer || '{}'))
-  })
 
   const parsedFiles = computed<
     Record<string, Record<string, { code: string, filename: string, html?: string }>>
@@ -379,7 +376,6 @@ export function useDemoBox(
   return {
     stackblitz,
     codesandbox,
-    codeplayer,
     activeFile,
     currentFiles,
     tabOrders,

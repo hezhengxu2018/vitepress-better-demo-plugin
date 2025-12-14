@@ -167,7 +167,7 @@ Gitlab 的使用方式和 Github 一致，只需将 `github` 属性替换为 `gi
 ```html
 <demo
   vue="../demos/demo.vue"
-  ssg="true"
+  :ssg="true"
 />
 ```
 
@@ -175,5 +175,5 @@ Gitlab 的使用方式和 Github 一致，只需将 `github` 属性替换为 `gi
 
 <demo
   vue="../demos/demo.vue"
-  ssg="true"
+  :ssg="true"
 />

@@ -16,14 +16,14 @@ import {
 } from './icons/index'
 
 const props = withDefaults(defineProps<VitepressDemoBoxProps>(), {
-  title: '标题',
-  description: '描述内容',
-  visible: true,
+  title: '',
+  description: '',
   select: COMPONENT_TYPE.VUE,
   order: 'vue,react,html',
   github: '',
   gitlab: '',
   htmlWriteWay: 'write',
+  scope: '',
   codeHighlights: '',
 })
 
@@ -80,7 +80,7 @@ const ns = useEpNameSpace()
         v-if="props.description || (!props.title && !props.description)"
         :class="[ns.bem('description', 'split-line')]"
       />
-      <div v-if="tabs.length > 1 && visible" :class="[ns.bem('lang-tabs')]">
+      <div v-if="tabs.length > 1" :class="[ns.bem('lang-tabs')]">
         <ElRadioGroup v-model="type">
           <ElRadio
             v-for="tab in tabs"
@@ -97,7 +97,7 @@ const ns = useEpNameSpace()
             <StackblitzIcon
               :code="currentCode"
               :type="type"
-              :scope="scope || ''"
+              :scope="scope"
               :templates="stackblitz.templates || []"
             />
           </ElIcon>
@@ -107,7 +107,7 @@ const ns = useEpNameSpace()
             <CodeSandboxIcon
               :code="currentCode"
               :type="type"
-              :scope="scope || ''"
+              :scope="scope"
               :templates="codesandbox.templates || []"
             />
           </ElIcon>
