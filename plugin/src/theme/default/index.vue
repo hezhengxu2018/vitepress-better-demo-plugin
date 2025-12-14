@@ -18,9 +18,8 @@ import { MessageService } from './message'
 import Tooltip from './tooltip/index.vue'
 
 const props = withDefaults(defineProps<VitepressDemoBoxProps>(), {
-  title: '标题',
-  description: '描述内容',
-  visible: true,
+  title: '',
+  description: '',
   select: COMPONENT_TYPE.VUE,
   order: 'vue,react,html',
   github: '',
@@ -111,7 +110,7 @@ function handleSourceLeave(el: Element) {
         v-if="props.description || (!props.title && !props.description)"
         :class="[ns.bem('description', 'split-line')]"
       />
-      <div v-if="tabs.length > 1 && visible" :class="[ns.bem('lang-tabs')]">
+      <div v-if="tabs.length > 1" :class="[ns.bem('lang-tabs')]">
         <div
           v-for="tab in tabs"
           :key="tab"
@@ -222,7 +221,7 @@ function handleSourceLeave(el: Element) {
 .#{$defaultPrefix}__container > .#{$defaultPrefix}-preview {
   box-sizing: border-box;
   padding: 20px 20px 30px 20px;
-  border-radius: 4px 4px 0 0;;
+  border-radius: 4px 4px 0 0;
   & > p {
     margin: 0;
     padding: 0;
@@ -242,10 +241,12 @@ function handleSourceLeave(el: Element) {
     font-weight: 500;
     margin-inline-start: 12px;
     border-radius: 6px 6px 0 0;
+    font-size: var(--vp-code-font-size);
   }
 
   .#{$defaultPrefix}-description__content {
     padding: 20px 20px 8px;
+    font-size: var(--vp-code-font-size);
   }
 
   .#{$defaultPrefix}-description__split-line {
@@ -305,6 +306,8 @@ function handleSourceLeave(el: Element) {
   justify-content: center;
   column-gap: 16px;
   overflow-x: auto;
+  background-color: var(--vp-c-bg);
+  font-size: var(--vp-code-font-size);
 
   .#{$defaultPrefix}-tab {
     cursor: pointer;
@@ -318,9 +321,5 @@ function handleSourceLeave(el: Element) {
 
 .#{$defaultPrefix}-lang-tabs {
   border-bottom: 1px dashed var(--vp-c-border);
-}
-
-.#{$defaultPrefix}-file-tabs {
-  border-top: 1px dashed var(--vp-c-border);
 }
 </style>

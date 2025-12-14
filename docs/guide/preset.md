@@ -9,12 +9,12 @@
 在 `<demo />` 组件中添加 `stackblitz/codesandbox` 属性，可对单个 `<demo />` 组件生效。例如：
 
 ```html
-<demo vue="../demos/demo.vue" stackblitz="true" codesandbox="true" />
+<demo vue="../demos/demo.vue" :stackblitz="true" :codesandbox="true" />
 ```
 
 渲染效果如下：
 
-<demo vue="../demos/demo.vue" stackblitz="true" codesandbox="true" />
+<demo vue="../demos/demo.vue" :stackblitz="true" :codesandbox="true" />
 
 ### 全局开启
 

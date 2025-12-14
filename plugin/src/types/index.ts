@@ -43,7 +43,6 @@ export interface VitepressDemoBoxProps {
   reactCode?: string
   htmlCode?: string
   order: string
-  visible?: boolean
   select?: ComponentType
   github?: string
   gitlab?: string
@@ -52,13 +51,9 @@ export interface VitepressDemoBoxProps {
   reactUseLayoutEffect?: any
   stackblitz?: string
   codesandbox?: string
-  codeplayer?: string
   scope?: string
   files: string
   codeHighlights?: string
-  lightTheme?: string
-  darkTheme?: string
-  theme?: string
   locale?: string
   htmlWriteWay?: 'write' | 'srcdoc'
   background?: string
@@ -143,21 +138,6 @@ export interface VitepressDemoBoxConfig {
    * @en The code files of the html
    */
   htmlFiles?: CodeFiles
-  /**
-   * @cn 亮色模式主题，参考 https://shiki.style/themes#bundled-themes
-   * @en The light theme, reference https://shiki.style/themes#bundled-themes
-   */
-  lightTheme?: string
-  /**
-   * @cn 暗色模式主题，参考 https://shiki.style/themes#bundled-themes
-   * @en The dark theme, reference https://shiki.style/themes#bundled-themes
-   */
-  darkTheme?: string
-  /**
-   * @cn 亮色/暗色模式统一的主题(建议使用 lightTheme 和 darkTheme 分开)，参考 https://shiki.style/themes#bundled-themes
-   * @en The light/dark theme, reference https://shiki.style/themes#bundled-themes
-   */
-  theme?: string
   /**
    * @cn 国际化配置 'zh-CN' | 'en-US'
    * @en The locale configuration 'zh-CN' | 'en-US'
