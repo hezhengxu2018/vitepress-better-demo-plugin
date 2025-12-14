@@ -242,10 +242,12 @@ function handleSourceLeave(el: Element) {
     font-weight: 500;
     margin-inline-start: 12px;
     border-radius: 6px 6px 0 0;
+    font-size: var(--vp-code-font-size);
   }
 
   .#{$defaultPrefix}-description__content {
     padding: 20px 20px 8px;
+    font-size: var(--vp-code-font-size);
   }
 
   .#{$defaultPrefix}-description__split-line {

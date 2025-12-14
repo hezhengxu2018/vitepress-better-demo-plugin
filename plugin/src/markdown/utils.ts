@@ -37,40 +37,6 @@ export function parseDemoAttributes(content: string): AttributeMap {
   return attributes
 }
 
-export function toStringAttr(value: unknown, defaultValue = '') {
-  if (value === undefined || value === null)
-    return defaultValue
-  if (typeof value === 'string')
-    return value.trim()
-  if (typeof value === 'number' || typeof value === 'boolean')
-    return String(value)
-  return defaultValue
-}
-
-export function toPathAttr(value: unknown) {
-  return typeof value === 'string' ? value.trim() : ''
-}
-
-export function toBoolean(value: unknown, defaultValue = false) {
-  if (value === undefined || value === null)
-    return defaultValue
-  if (typeof value === 'boolean')
-    return value
-  if (typeof value === 'number')
-    return value !== 0
-  if (typeof value === 'string') {
-    const normalized = value.trim().toLowerCase()
-    if (!normalized)
-      return defaultValue
-    if (normalized === 'false' || normalized === '0')
-      return false
-    if (normalized === 'true' || normalized === '1')
-      return true
-    return true
-  }
-  return defaultValue
-}
-
 export function parseFilesAttribute(input: unknown): CodeFiles | undefined {
   if (input == null || input === '')
     return undefined
@@ -87,24 +53,15 @@ export function parseFilesAttribute(input: unknown): CodeFiles | undefined {
 }
 
 export function applyPlatformValue(target: { show: boolean, [key: string]: any }, value: unknown) {
-  if (value === undefined || value === null)
+  if (value === undefined || value === null || Array.isArray(value))
     return
   if (isPlainObject(value)) {
     Object.assign(target, value)
     return
   }
-  if (Array.isArray(value))
-    return
-  if (typeof value === 'string') {
-    const { success, value: parsed } = tryParseJsonLike(value)
-    if (success && isPlainObject(parsed)) {
-      Object.assign(target, parsed)
-      return
-    }
-    target.show = toBoolean(value, target.show)
-    return
+  if (typeof value === 'boolean') {
+    target.show = value
   }
-  target.show = toBoolean(value, target.show)
 }
 
 export function isPlainObject(value: unknown): value is Record<string, any> {

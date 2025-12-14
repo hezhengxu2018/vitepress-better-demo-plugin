@@ -1,6 +1,6 @@
 import type Token from 'markdown-it/lib/token'
 import type { MarkdownRenderer } from 'vitepress'
-import type { CodeFiles, DefaultProps, VitepressDemoBoxConfig } from '@/types'
+import type { CodeFiles, VitepressDemoBoxConfig } from '@/types'
 import fs from 'node:fs'
 import path from 'node:path'
 import {
@@ -10,7 +10,6 @@ import {
   isPlainObject,
   parseDemoAttributes,
   parseFilesAttribute,
-  toStringAttr,
 } from './utils'
 
 /**
@@ -43,13 +42,12 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
     vueFiles: vueFilesAttr,
     reactFiles: reactFilesAttr,
     htmlFiles: htmlFilesAttr,
-    wrapperComponentName: wrapperComponentNameAttr,
-    placeholderComponentName: placeholderComponentNameAttr,
+    wrapperComponentName: wrapperComponentNameValue,
+    placeholderComponentName: placeholderComponentNameValue,
     ssg: ssgValue,
+    ...restProps
   } = attributes
 
-  const wrapperComponentNameValue = toStringAttr(wrapperComponentNameAttr)
-  const placeholderComponentNameValue = toStringAttr(placeholderComponentNameAttr)
   const wrapperName = wrapperComponentNameValue || wrapperComponentName
   const placeholderName = placeholderComponentNameValue || placeholderComponentName
   const mdFilePath = mdFile.realPath ?? mdFile.path
@@ -342,6 +340,7 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
   ${ssgValue ? '' : '<ClientOnly>'}
     <${wrapperName}
       v-show="!${placeholderVisibleKey}"
+      v-bind='${JSON.stringify(restProps)}'
       stackblitz="${encodeURIComponent(JSON.stringify(stackblitz))}"
       codesandbox="${encodeURIComponent(JSON.stringify(codesandbox))}"
       files="${encodeURIComponent(JSON.stringify(files))}"

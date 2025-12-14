@@ -59,3 +59,7 @@ vue "../demos/demo.vue"
 ```
 
 仅会对vue的demo做这样的简化，一方面是与element-plus文档的写法对齐，另外一方面是Vue类型的demo展示应该是本插件的主要应用场景。
+
+::: demo
+../demos/demo
+:::
