@@ -20,7 +20,6 @@ import Tooltip from './tooltip/index.vue'
 const props = withDefaults(defineProps<VitepressDemoBoxProps>(), {
   title: '',
   description: '',
-  visible: true,
   select: COMPONENT_TYPE.VUE,
   order: 'vue,react,html',
   github: '',
@@ -222,7 +221,7 @@ function handleSourceLeave(el: Element) {
 .#{$defaultPrefix}__container > .#{$defaultPrefix}-preview {
   box-sizing: border-box;
   padding: 20px 20px 30px 20px;
-  border-radius: 4px 4px 0 0;;
+  border-radius: 4px 4px 0 0;
   & > p {
     margin: 0;
     padding: 0;

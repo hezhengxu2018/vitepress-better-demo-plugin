@@ -186,22 +186,14 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
     html: '',
   }
 
-  const fallbackLangMap: Record<'vue' | 'react' | 'html', string> = {
-    vue: 'vue',
-    react: 'tsx',
-    html: 'html',
-  }
-
-  const resolveLangByFile = (filePath: string, fallback: string) => {
+  const resolveLangByFile = (filePath: string) => {
     const ext = path.extname(filePath || '').replace('.', '').toLowerCase()
-    if (!ext)
-      return fallback
     const alias: Record<string, string> = {
       htm: 'html',
       mjs: 'js',
       cjs: 'js',
     }
-    return alias[ext] || ext || fallback
+    return alias[ext] || ext
   }
 
   const renderHighlightedCode = (code: string, lang: string) => {
@@ -238,7 +230,7 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
       }
       highlightedCode[type] = renderHighlightedCode(
         source,
-        resolveLangByFile(absPath, fallbackLangMap[type]),
+        resolveLangByFile(absPath),
       )
     }
     catch (_error) {
@@ -294,10 +286,7 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
             files[key][file].code = code
             files[key][file].html = renderHighlightedCode(
               code,
-              resolveLangByFile(
-                filePath,
-                fallbackLangMap[key],
-              ),
+              resolveLangByFile(filePath),
             )
           }
         }
@@ -313,7 +302,7 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
 
   // 国际化
   let locale = ''
-  if (config?.locale && typeof config.locale === 'object') {
+  if (isPlainObject(config?.locale)) {
     locale = encodeURIComponent(JSON.stringify(config.locale))
   }
 

@@ -94,6 +94,10 @@ export function createDemoContainer(md: MarkdownRenderer, pluginConfig?: Vitepre
   }
 }
 
-export type { VitepressDemoBoxConfig } from '../types'
+export type { VitepressDemoBoxConfig, VitepressDemoBoxProps } from '../types'
 
 export { useDemoBox } from '@/shared/composables/useDemoBox'
+
+export { COMPONENT_TYPE } from '@/shared/constant'
+
+export { i18n } from '@/shared/locales/i18n'

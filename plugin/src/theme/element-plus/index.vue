@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { VitepressDemoBoxProps } from '@/types'
-import { ElCollapseTransition, ElDivider, ElIcon, ElMessage, ElRadio, ElRadioButton, ElRadioGroup, ElTooltip } from 'element-plus'
+import { ElCollapseTransition, ElIcon, ElMessage, ElRadio, ElRadioButton, ElRadioGroup, ElTooltip } from 'element-plus'
 import { useDemoBox } from '@/shared/composables/useDemoBox'
 import { COMPONENT_TYPE } from '@/shared/constant'
 import { i18n } from '@/shared/locales/i18n'
@@ -16,7 +16,6 @@ import {
 } from './icons/index'
 
 const props = withDefaults(defineProps<VitepressDemoBoxProps>(), {
-  title: '',
   description: '',
   select: COMPONENT_TYPE.VUE,
   order: 'vue,react,html',
@@ -57,131 +56,129 @@ const ns = useEpNameSpace()
 </script>
 
 <template>
-  <div :class="[ns.e('container')]">
-    <!-- 预览区 -->
-    <section class="vp-raw" :class="[ns.bem('preview')]" :style="{ background: props.background }">
-      <slot v-if="type === 'vue'" name="vue" />
-      <div v-else-if="type === 'html'" ref="htmlContainerRef">
-        <iframe style="width: 100%; height: auto; border: none" />
-      </div>
-      <div v-else-if="type === 'react'" ref="reactContainerRef" />
-    </section>
-    <!-- 描述及切换 -->
-    <section :class="[ns.bem('description')]">
-      <ElDivider v-if="title" :class="[ns.bem('description', 'title')]" content-position="left">
-        {{ title }}
-      </ElDivider>
-      <div
-        v-if="description"
-        :class="[ns.bem('description', 'content')]"
-        v-html="description"
-      />
-      <div
-        v-if="props.description || (!props.title && !props.description)"
-        :class="[ns.bem('description', 'split-line')]"
-      />
-      <div v-if="tabs.length > 1" :class="[ns.bem('lang-tabs')]">
-        <ElRadioGroup v-model="type">
-          <ElRadio
-            v-for="tab in tabs"
-            :key="tab"
-            :value="tab"
-          >
-            {{ tab }}
-          </ElRadio>
-        </ElRadioGroup>
-      </div>
-      <div :class="[ns.bem('description', 'handle-btn-op-bar')]">
-        <ElTooltip v-if="stackblitz.show" :content="i18n.openInStackblitz">
-          <ElIcon :class="ns.bem('description', 'handle-btn')">
-            <StackblitzIcon
-              :code="currentCode"
-              :type="type"
-              :scope="scope"
-              :templates="stackblitz.templates || []"
-            />
-          </ElIcon>
-        </ElTooltip>
-        <ElTooltip v-if="codesandbox.show" :content="i18n.openInCodeSandbox">
-          <ElIcon :class="ns.bem('description', 'handle-btn')">
-            <CodeSandboxIcon
-              :code="currentCode"
-              :type="type"
-              :scope="scope"
-              :templates="codesandbox.templates || []"
-            />
-          </ElIcon>
-        </ElTooltip>
-        <ElTooltip v-if="github" :content="i18n.openInGithub">
-          <ElIcon :class="ns.bem('description', 'handle-btn')">
-            <GithubIcon @click="openGithub" />
-          </ElIcon>
-        </ElTooltip>
-        <ElTooltip v-if="gitlab" :content="i18n.openInGitlab">
-          <ElIcon :class="ns.bem('description', 'handle-btn')">
-            <GitlabIcon @click="openGitlab" />
-          </ElIcon>
-        </ElTooltip>
-        <ElTooltip :content="i18n.copyCode">
-          <ElIcon :class="ns.bem('description', 'handle-btn')">
-            <CopyIcon @click="clickCodeCopy" />
-          </ElIcon>
-        </ElTooltip>
-        <ElTooltip :content="i18n.expandCode">
-          <ElIcon :class="ns.bem('description', 'handle-btn')">
-            <CodeOpenIcon @click="setCodeFold(!isCodeFold)" />
-          </ElIcon>
-        </ElTooltip>
-      </div>
-    </section>
-    <!-- 代码展示区 -->
-    <section :class="[ns.bem('source')]">
-      <ElCollapseTransition>
-        <div v-show="!isCodeFold">
-          <div v-if="Object.keys(currentFiles).length" :class="[ns.bem('file-tabs')]">
-            <ElRadioGroup v-model="activeFile">
-              <ElRadioButton
-                v-for="file in Object.keys(currentFiles)"
-                :key="file"
-                size="small"
-                :value="file"
-              >
-                {{ file }}
-              </ElRadioButton>
-            </ElRadioGroup>
-          </div>
-          <div v-html="currentCodeHtml" />
+  <div :class="[ns.e('wrapper')]">
+    <div v-if="description" :class="[ns.bem('description', 'content')]" v-html="description" />
+    <div :class="[ns.e('container')]">
+      <!-- 预览区 -->
+      <section class="vp-raw" :class="[ns.bem('preview')]" :style="{ background: props.background }">
+        <slot v-if="type === 'vue'" name="vue" />
+        <div v-else-if="type === 'html'" ref="htmlContainerRef">
+          <iframe style="width: 100%; height: auto; border: none" />
         </div>
-      </ElCollapseTransition>
-
-      <Transition name="el-fade-in-linear">
+        <div v-else-if="type === 'react'" ref="reactContainerRef" />
+      </section>
+      <!-- 描述及切换 -->
+      <section :class="[ns.bem('operation-area-wrapper')]"> 
         <div
-          v-show="!isCodeFold"
-          :class="[ns.bem('float-control')]"
-          tabindex="0"
-          role="button"
-          @click="setCodeFold(!isCodeFold)"
-        >
-          <ElIcon :size="16">
-            <FoldIcon />
-          </ElIcon>
-          <span>{{ i18n.collapseCode }}</span>
+          :class="[ns.bem('operation-area-wrapper', 'split-line')]"
+        />
+        <div v-if="tabs.length > 1" :class="[ns.bem('lang-tabs')]">
+          <ElRadioGroup v-model="type">
+            <ElRadio
+              v-for="tab in tabs"
+              :key="tab"
+              :value="tab"
+            >
+              {{ tab }}
+            </ElRadio>
+          </ElRadioGroup>
         </div>
-      </Transition>
-    </section>
+        <div :class="[ns.bem('operation-area-wrapper', 'handle-btn-op-bar')]">
+          <ElTooltip v-if="stackblitz.show" :content="i18n.openInStackblitz">
+            <ElIcon :class="ns.bem('operation-area-wrapper', 'handle-btn')">
+              <StackblitzIcon
+                :code="currentCode"
+                :type="type"
+                :scope="scope"
+                :templates="stackblitz.templates || []"
+              />
+            </ElIcon>
+          </ElTooltip>
+          <ElTooltip v-if="codesandbox.show" :content="i18n.openInCodeSandbox">
+            <ElIcon :class="ns.bem('operation-area-wrapper', 'handle-btn')">
+              <CodeSandboxIcon
+                :code="currentCode"
+                :type="type"
+                :scope="scope"
+                :templates="codesandbox.templates || []"
+              />
+            </ElIcon>
+          </ElTooltip>
+          <ElTooltip v-if="github" :content="i18n.openInGithub">
+            <ElIcon :class="ns.bem('operation-area-wrapper', 'handle-btn')">
+              <GithubIcon @click="openGithub" />
+            </ElIcon>
+          </ElTooltip>
+          <ElTooltip v-if="gitlab" :content="i18n.openInGitlab">
+            <ElIcon :class="ns.bem('operation-area-wrapper', 'handle-btn')">
+              <GitlabIcon @click="openGitlab" />
+            </ElIcon>
+          </ElTooltip>
+          <ElTooltip :content="i18n.copyCode">
+            <ElIcon :class="ns.bem('operation-area-wrapper', 'handle-btn')">
+              <CopyIcon @click="clickCodeCopy" />
+            </ElIcon>
+          </ElTooltip>
+          <ElTooltip :content="i18n.expandCode">
+            <ElIcon :class="ns.bem('operation-area-wrapper', 'handle-btn')">
+              <CodeOpenIcon @click="setCodeFold(!isCodeFold)" />
+            </ElIcon>
+          </ElTooltip>
+        </div>
+      </section>
+      <!-- 代码展示区 -->
+      <section :class="[ns.bem('source')]">
+        <ElCollapseTransition>
+          <div v-show="!isCodeFold">
+            <div v-if="Object.keys(currentFiles).length" :class="[ns.bem('file-tabs')]">
+              <ElRadioGroup v-model="activeFile">
+                <ElRadioButton
+                  v-for="file in Object.keys(currentFiles)"
+                  :key="file"
+                  size="small"
+                  :value="file"
+                >
+                  {{ file }}
+                </ElRadioButton>
+              </ElRadioGroup>
+            </div>
+            <div v-html="currentCodeHtml" />
+          </div>
+        </ElCollapseTransition>
+  
+        <Transition name="el-fade-in-linear">
+          <div
+            v-show="!isCodeFold"
+            :class="[ns.bem('float-control')]"
+            tabindex="0"
+            role="button"
+            @click="setCodeFold(!isCodeFold)"
+          >
+            <ElIcon :size="16">
+              <FoldIcon />
+            </ElIcon>
+            <span>{{ i18n.collapseCode }}</span>
+          </div>
+        </Transition>
+      </section>
+    </div>
   </div>
 </template>
 
 <style lang="scss">
+  .#{$epPrefix}-description__content {
+    font-size: 14px;
+  }
+
   .#{$epPrefix}__container {
     div[class*='language-'] {
-      margin-top: 0;
-      margin-bottom: 0;
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
     }
 
     .language-html {
-      margin-top: 0;
-      margin-bottom: 0;
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
     }
   }
 
@@ -208,26 +205,18 @@ const ns = useEpNameSpace()
     }
   }
 
-  .#{$epPrefix}__container>.#{$epPrefix}-description {
-    .el-divider {
-      --el-border-color: var(--vp-c-divider);
-    }
+  .#{$epPrefix}__container>.#{$epPrefix}-operation-area-wrapper {
 
-    .el-divider__text {
-      background-color: var(--vp-c-bg);
-      color: var(--vp-c-text-1);
-    }
-
-    .#{$epPrefix}-description__content {
+    .#{$epPrefix}-operation-area-wrapper__content {
       padding: 0 20px 20px 20px;
       font-size: 14px;
     }
 
-    .#{$epPrefix}-description__split-line {
+    .#{$epPrefix}-operation-area-wrapper__split-line {
       border-bottom: 1px dashed var(--vp-c-divider);
     }
 
-    .#{$epPrefix}-description__handle-btn-op-bar {
+    .#{$epPrefix}-operation-area-wrapper__handle-btn-op-bar {
       height: 40px;
       width: 100%;
       display: flex;
@@ -238,7 +227,7 @@ const ns = useEpNameSpace()
       font-size: 16px;
     }
 
-    .#{$epPrefix}-description__handle-btn {
+    .#{$epPrefix}-operation-area-wrapper__handle-btn {
       margin: 0 8px;
       cursor: pointer;
       color: var(--text-color-lighter);
@@ -280,6 +269,7 @@ const ns = useEpNameSpace()
     padding: 4px 0;
     display: flex;
     justify-content: center;
+    background: var(--vp-c-bg);
 
     .el-radio__input {
       display: none;
