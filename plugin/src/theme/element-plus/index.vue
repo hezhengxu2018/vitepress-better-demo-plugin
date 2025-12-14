@@ -68,7 +68,7 @@ const ns = useEpNameSpace()
         <div v-else-if="type === 'react'" ref="reactContainerRef" />
       </section>
       <!-- 描述及切换 -->
-      <section :class="[ns.bem('operation-area-wrapper')]"> 
+      <section :class="[ns.bem('operation-area-wrapper')]">
         <div
           :class="[ns.bem('operation-area-wrapper', 'split-line')]"
         />
@@ -145,7 +145,7 @@ const ns = useEpNameSpace()
             <div v-html="currentCodeHtml" />
           </div>
         </ElCollapseTransition>
-  
+
         <Transition name="el-fade-in-linear">
           <div
             v-show="!isCodeFold"
