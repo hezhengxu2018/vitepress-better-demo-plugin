@@ -46,9 +46,11 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
     htmlFiles: htmlFilesAttr,
     wrapperComponentName: wrapperComponentNameValue,
     placeholderComponentName: placeholderComponentNameValue,
-    ssg: ssgValue,
     ...restProps
   } = attributes
+
+  if ('ssg' in restProps)
+    delete (restProps as Record<string, any>).ssg
 
   const wrapperName = wrapperComponentNameValue || wrapperComponentName
   const placeholderName = placeholderComponentNameValue || placeholderComponentName
@@ -111,7 +113,7 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
       mdFile,
       componentVuePath,
       componentName,
-      ssgValue ? undefined : 'dynamicImport',
+      'dynamicImport',
     )
   }
   if (componentReactPath) {
@@ -376,12 +378,8 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
 
   const sourceCode = `
   ${hiddenHighlightBlocks}
-  ${
-    ssgValue
-      ? ''
-      : `<${placeholderName} v-show="${placeholderVisibleKey}" />`
-  }
-  ${ssgValue ? '' : '<ClientOnly>'}
+  <${placeholderName} v-show="${placeholderVisibleKey}" />
+  <ClientOnly>
     <${wrapperName}
       v-show="!${placeholderVisibleKey}"
       v-bind='${JSON.stringify(restProps)}'
@@ -428,7 +426,7 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
           : ''
       }
     </${wrapperName}>
-  ${ssgValue ? '' : '</ClientOnly>'}`.trim()
+  </ClientOnly>`.trim()
 
   return sourceCode
 }

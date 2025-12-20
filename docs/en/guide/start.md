@@ -156,23 +156,3 @@ The corresponding rendering result is as follows:
 />
 
 For GitLab, the usage is the same as GitHub. Simply replace `github` with `gitlab`.
-
-## SSG
-
-To avoid using `window`, `document`, or other browser globals in user components, `vitepress-better-demo-plugin` wraps user components with the `<ClientOnly>` component by default. However, this prevents the components from being included in static rendering and may slow down their loading speed.
-
-If you are sure your components do not use `window`, `document`, or other browser globals and only use Vue components, you can disable the `<ClientOnly>` wrapper by setting the `ssg` attribute to improve loading performance.
-
-```html
-<demo
-  vue="../demos/demo.vue"
-  ssg="true"
-/>  
-```
-
-The corresponding rendering result is as follows:
-
-<demo
-  vue="../demos/demo.vue"
-  ssg="true"
-/>

@@ -12,7 +12,7 @@ Forked from `vitepress-demo-plugin@1.5.0`, currently `0.0.1` (released 2025-11-2
 - StackBlitz and CodeSandbox buttons per demo or globally, backed by extensible templates.
 - Default and Element Plus demo wrappers, or plug in your own components.
 - TypeScript-first DX via `VitepressDemoBoxConfig`, markdown-it-container support, and Shiki reuse.
-- Fine-grained controls for demo directories, ordering, multiple files, HTML rendering, SSG, locale, and style isolation.
+- Fine-grained controls for demo directories, ordering, multiple files, HTML rendering, locale, and style isolation.
 - Bilingual docs plus change logs covering TS hints, themes, and renderer updates.
 
 ## Installation
@@ -82,7 +82,6 @@ Peer dependencies: `vitepress`, `vue@^3.2`, optional `element-plus`.
     title="Multiple Syntax DEMO"
     description="One block, three runtimes"
     github="https://github.com/hezhengxu2018/vitepress-better-demo-plugin/blob/main/docs/demos/demo.vue"
-    ssg="true"
   />
   ```
 
@@ -159,7 +158,6 @@ Match scopes with `<demo scope="myScope" />`.
 - `github` / `gitlab` - add CTA buttons.
 - `vueFiles` / `reactFiles` / `htmlFiles` - show multiple files (arrays or named objects).
 - `scope` - pair demos with template or theme scopes.
-- `ssg="true"` - opt out of `<ClientOnly>` when safe for SSR.
 - `htmlWriteWay` - choose `write` vs `srcdoc` for HTML demos.
 - Local assets - keep static files under `docs/public` and reference them via absolute paths in HTML.
 - Style isolation - add `postcssIsolateStyles` in `postcss.config.mjs`.
