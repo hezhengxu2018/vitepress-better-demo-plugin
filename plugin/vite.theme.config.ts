@@ -1,5 +1,6 @@
 import { resolve } from 'node:path'
 import vue from '@vitejs/plugin-vue'
+import dts from 'unplugin-dts/vite'
 import { defineConfig } from 'vite'
 import { libInjectCss } from 'vite-plugin-lib-inject-css'
 import { DEFAULT_NAMESPACE, EP_NAMESPACE } from './src/shared/constant/style-prefix'
@@ -20,7 +21,7 @@ export default defineConfig({
       },
     },
   },
-  plugins: [vue(), libInjectCss()],
+  plugins: [vue(), libInjectCss(), dts({ processor: 'vue', entryRoot: 'src', exclude: ['src/markdown/**'], bundleTypes: true, tsconfigPath: resolve(__dirname, 'tsconfig.json') })],
   resolve: { alias: { '@': resolve(__dirname, 'src') } },
   build: {
     outDir: 'dist/theme',
