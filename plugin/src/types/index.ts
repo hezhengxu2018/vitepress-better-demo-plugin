@@ -54,6 +54,7 @@ export interface VitepressDemoBoxProps {
   scope?: string
   files: string
   codeHighlights?: string
+  codeHighlightDomKeys?: string
   locale?: string
   htmlWriteWay?: 'write' | 'srcdoc'
   background?: string
@@ -87,7 +88,7 @@ export interface TabConfig {
 
 export type Files = Record<
   string,
-  { code: string, filename: string, html?: string }
+  { code: string, filename: string, html?: string, htmlDomKey?: string }
 >
 
 export interface Platform {

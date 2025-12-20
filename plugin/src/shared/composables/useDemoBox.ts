@@ -30,7 +30,7 @@ export function useDemoBox(
   })
 
   const parsedFiles = computed<
-    Record<string, Record<string, { code: string, filename: string, html?: string }>>
+    Record<string, Record<string, { code: string, filename: string, html?: string, htmlDomKey?: string }>>
   >(() => {
     try {
       return JSON.parse(decodeURIComponent(props.files || '{}'))
@@ -41,11 +41,33 @@ export function useDemoBox(
     }
   })
 
+  const parsedInlineHighlightDomKeys = computed<
+    Partial<Record<ComponentType, string>>
+  >(() => {
+    if (!props.codeHighlightDomKeys) {
+      return {}
+    }
+    try {
+      return JSON.parse(decodeURIComponent(props.codeHighlightDomKeys))
+    }
+    catch (error) {
+      console.error(error)
+      return {}
+    }
+  })
+
+  const inlineDomHighlightHtml = ref<Partial<Record<ComponentType, string>>>({})
+  const fileDomHighlightHtml = ref<Record<ComponentType, Record<string, string>>>({
+    vue: {},
+    react: {},
+    html: {},
+  })
+
   const activeFile = ref<string>('')
   const type = ref<ComponentType>(COMPONENT_TYPE.VUE)
 
   const currentFiles = computed<
-    Record<string, { code: string, filename: string, html?: string }>
+    Record<string, { code: string, filename: string, html?: string, htmlDomKey?: string }>
   >(() => {
     const result = parsedFiles.value?.[type.value] || {}
     if (Object.keys(result).length && !result[activeFile.value]) {
@@ -86,9 +108,17 @@ export function useDemoBox(
 
   const currentCodeHtml = computed(() => {
     if (currentFiles.value && currentFiles.value[activeFile.value]) {
-      return currentFiles.value[activeFile.value].html || ''
+      return (
+        currentFiles.value[activeFile.value].html
+        || fileDomHighlightHtml.value?.[type.value]?.[activeFile.value]
+        || ''
+      )
     }
-    return parsedCodeHighlights.value?.[type.value] || ''
+    return (
+      inlineDomHighlightHtml.value[type.value]
+      || parsedCodeHighlights.value?.[type.value]
+      || ''
+    )
   })
 
   const tabs = computed<ComponentType[]>(() => {
@@ -138,6 +168,85 @@ export function useDemoBox(
 
   const htmlContainerRef = ref<HTMLElement | null>(null)
   let iframeObserver: (() => void) | null = null
+
+  const readDomHtmlById = (id?: string) => {
+    if (typeof window === 'undefined' || !id) {
+      return ''
+    }
+    const el = document.getElementById(id)
+    if (!el) {
+      return ''
+    }
+    const html = el.innerHTML
+    el.remove()
+    return html
+  }
+
+  const syncDomHighlights = () => {
+    if (typeof window === 'undefined') {
+      return
+    }
+    nextTick(() => {
+      const inlineKeys = parsedInlineHighlightDomKeys.value || {}
+      const inlineResult: Partial<Record<ComponentType, string>> = {
+        ...inlineDomHighlightHtml.value,
+      }
+      ;(Object.keys(inlineKeys) as ComponentType[]).forEach((lang) => {
+        if (inlineResult[lang]) {
+          return
+        }
+        const html = readDomHtmlById(inlineKeys[lang])
+        if (html) {
+          inlineResult[lang] = html
+        }
+      })
+      inlineDomHighlightHtml.value = inlineResult
+
+      const fileResult: Record<ComponentType, Record<string, string>> = {
+        vue: { ...(fileDomHighlightHtml.value.vue || {}) },
+        react: { ...(fileDomHighlightHtml.value.react || {}) },
+        html: { ...(fileDomHighlightHtml.value.html || {}) },
+      }
+      const files = parsedFiles.value || {}
+      ;(Object.keys(files) as ComponentType[]).forEach((lang) => {
+        const entries = files[lang] || {}
+        Object.keys(entries).forEach((filename) => {
+          if (fileResult[lang]?.[filename]) {
+            return
+          }
+          const domKey = entries[filename]?.htmlDomKey
+          if (!domKey) {
+            return
+          }
+          const html = readDomHtmlById(domKey)
+          if (!html) {
+            return
+          }
+          if (!fileResult[lang]) {
+            fileResult[lang] = {}
+          }
+          fileResult[lang][filename] = html
+        })
+      })
+      fileDomHighlightHtml.value = fileResult
+    })
+  }
+
+  watch(
+    () => props.codeHighlightDomKeys,
+    () => {
+      syncDomHighlights()
+    },
+    { flush: 'post' },
+  )
+
+  watch(
+    () => props.files,
+    () => {
+      syncDomHighlights()
+    },
+    { flush: 'post' },
+  )
   function setHTMLWithScript() {
     nextTick(() => {
       if (!htmlContainerRef.value || !props.htmlCode) {
@@ -362,6 +471,7 @@ export function useDemoBox(
   onMounted(() => {
     initI18n(props.locale)
     observeI18n()
+    syncDomHighlights()
   })
 
   onUnmounted(() => {

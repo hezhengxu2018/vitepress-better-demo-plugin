@@ -21,7 +21,7 @@ export default defineConfig({
       fileName: 'index',
     },
     rollupOptions: {
-      external: ['vue', 'vitepress', /^vitepress\/.*/, 'node:fs', 'node:path'],
+      external: ['vue', 'vitepress', /^vitepress\/.*/, 'node:fs', 'node:path', 'node:buffer'],
       output: {
         exports: 'named',
       },

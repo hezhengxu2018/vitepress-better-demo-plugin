@@ -1,11 +1,13 @@
 import type Token from 'markdown-it/lib/token'
 import type { MarkdownRenderer } from 'vitepress'
 import type { CodeFiles, VitepressDemoBoxConfig } from '@/types'
+import { Buffer } from 'node:buffer'
 import fs from 'node:fs'
 import path from 'node:path'
 import {
   applyPlatformValue,
   composeComponentName,
+  escapeAttributeValue,
   injectComponentImportScript,
   isPlainObject,
   parseDemoAttributes,
@@ -175,15 +177,51 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
 
   // 多文件展示
   const files = {
-    vue: {} as Record<string, { code: string, filename: string, html?: string }>,
-    react: {} as Record<string, { code: string, filename: string, html?: string }>,
-    html: {} as Record<string, { code: string, filename: string, html?: string }>,
+    vue: {} as Record<string, { code: string, filename: string, html?: string, htmlDomKey?: string }>,
+    react: {} as Record<string, { code: string, filename: string, html?: string, htmlDomKey?: string }>,
+    html: {} as Record<string, { code: string, filename: string, html?: string, htmlDomKey?: string }>,
   }
 
   const highlightedCode: Record<'vue' | 'react' | 'html', string> = {
     vue: '',
     react: '',
     html: '',
+  }
+
+  const inlineHighlightDomKeys: Partial<Record<'vue' | 'react' | 'html', string>> = {}
+  const highlightDomSnippets: string[] = []
+
+  const createHighlightDomId = (
+    lang: 'vue' | 'react' | 'html',
+    scope: string,
+  ) => {
+    const base = `${componentName}_${demoIndex}_${lang}_${scope}`
+    return `vp_demo_highlight_${Buffer.from(base)
+      .toString('base64')
+      .replace(/=/g, '')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')}`
+  }
+
+  const registerHighlightDom = (
+    lang: 'vue' | 'react' | 'html',
+    html: string,
+    fileKey?: string,
+  ) => {
+    if (!html)
+      return ''
+    const domId = createHighlightDomId(lang, fileKey ? `file_${fileKey}` : 'inline')
+    const attrs = [
+      `id="${domId}"`,
+      `data-vp-demo-lang="${lang}"`,
+      fileKey ? `data-vp-demo-file="${escapeAttributeValue(fileKey)}"` : '',
+    ]
+      .filter(Boolean)
+      .join(' ')
+    highlightDomSnippets.push(`<div ${attrs} style="display:none;">${html}</div>`)
+    if (!fileKey)
+      inlineHighlightDomKeys[lang] = domId
+    return domId
   }
 
   const resolveLangByFile = (filePath: string) => {
@@ -284,10 +322,18 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
           }
           else {
             files[key][file].code = code
-            files[key][file].html = renderHighlightedCode(
+            const highlighted = renderHighlightedCode(
               code,
               resolveLangByFile(filePath),
             )
+            files[key][file].html = highlighted
+            const domKey = registerHighlightDom(
+              key,
+              highlighted,
+              file,
+            )
+            if (domKey)
+              files[key][file].htmlDomKey = domKey
           }
         }
         else {
@@ -308,19 +354,28 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
 
   if (componentVuePath) {
     collectHighlightedCode('vue', componentVuePath)
+    registerHighlightDom('vue', highlightedCode.vue)
   }
   if (componentReactPath) {
     collectHighlightedCode('react', componentReactPath)
+    registerHighlightDom('react', highlightedCode.react)
   }
   if (componentHtmlPath) {
     collectHighlightedCode('html', componentHtmlPath)
+    registerHighlightDom('html', highlightedCode.html)
   }
 
   const encodedCodeHighlights = encodeURIComponent(
     JSON.stringify(highlightedCode),
   )
+  const encodedInlineHighlightDomKeys = encodeURIComponent(
+    JSON.stringify(inlineHighlightDomKeys),
+  )
+
+  const hiddenHighlightBlocks = highlightDomSnippets.join('\n')
 
   const sourceCode = `
+  ${hiddenHighlightBlocks}
   ${
     ssgValue
       ? ''
@@ -334,6 +389,7 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
       codesandbox="${encodeURIComponent(JSON.stringify(codesandbox))}"
       files="${encodeURIComponent(JSON.stringify(files))}"
       codeHighlights="${encodedCodeHighlights}"
+      codeHighlightDomKeys="${encodedInlineHighlightDomKeys}"
       locale="${locale}"
       @mount="() => { ${placeholderVisibleKey} = false; }"
       ${
