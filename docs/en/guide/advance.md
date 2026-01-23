@@ -72,6 +72,37 @@ You can specify the background color of the demo container through the `backgrou
 
 <demo vue="demo.vue" background="#f0ffff" />
 
+## Render Demos During SSG
+
+By default, `vitepress-better-demo-plugin` wraps every demo in `<ClientOnly />` so that browser-only APIs won't break the build. If a demo is safe to run on the server, turn on the `ssg` option to emit its HTML during SSG and avoid first-paint flicker.
+
+::: warning Heads-up
+After enabling `ssg`, the referenced Vue/React component is imported synchronously while building the site. Make sure your demo code does not access `window`, `document`, or other browser-only globals.
+:::
+
+### Enable Globally
+
+```ts
+import { defineConfig } from 'vitepress';
+import { vitepressDemoPlugin } from 'vitepress-better-demo-plugin';
+
+export default defineConfig({
+  markdown: {
+    config(md) {
+      md.use(vitepressDemoPlugin, {
+        ssg: true, // [!code ++]
+      });
+    },
+  },
+});
+```
+
+### Enable Per Demo
+
+```html
+<demo vue="../demos/demo.vue" ssg />
+```
+
 ## Display Order And Default Selection
 
 ### Local Configuration

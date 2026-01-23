@@ -72,6 +72,37 @@ export default defineConfig({
 
 <demo vue="demo.vue" background="#f0ffff" />
 
+## 在 SSG 中预渲染 demo
+
+`vitepress-better-demo-plugin` 默认把 demo 包裹在 `<ClientOnly />` 中，这样就算 demo 依赖浏览器 API 也不会影响构建。如果确认 demo 能够安全地在服务端渲染，你可以开启 `ssg` 选项，让页面在 SSG 阶段就输出完整的 demo HTML，避免首屏闪烁。
+
+::: warning 注意
+开启 `ssg` 后，demo 会被同步引入并在构建阶段执行，请确保示例代码没有直接访问 `window`/`document` 等仅浏览器可用的对象。
+:::
+
+### 全局开启
+
+```ts
+import { defineConfig } from 'vitepress';
+import { vitepressDemoPlugin } from 'vitepress-better-demo-plugin';
+
+export default defineConfig({
+  markdown: {
+    config(md) {
+      md.use(vitepressDemoPlugin, {
+        ssg: true, // [!code ++]
+      });
+    },
+  },
+});
+```
+
+### 局部开启
+
+```html
+<demo vue="../demos/demo.vue" ssg />
+```
+
 ## 展示顺序和默认选中
 
 ### 局部配置

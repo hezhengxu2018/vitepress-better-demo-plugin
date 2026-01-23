@@ -32,6 +32,7 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
     wrapperComponentName = 'vitepress-demo-box',
     placeholderComponentName = 'vitepress-demo-placeholder',
     autoImportWrapper = true,
+    ssg: configSsgValue = false,
   } = config || {}
 
   const attributes = parseDemoAttributes(token.content)
@@ -46,11 +47,13 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
     htmlFiles: htmlFilesAttr,
     wrapperComponentName: wrapperComponentNameValue,
     placeholderComponentName: placeholderComponentNameValue,
+    ssg: ssgAttr,
     ...restProps
   } = attributes
 
-  if ('ssg' in restProps)
-    delete (restProps as Record<string, any>).ssg
+  const ssgValue = typeof ssgAttr === 'boolean'
+    ? ssgAttr
+    : configSsgValue
 
   const wrapperName = wrapperComponentNameValue || wrapperComponentName
   const placeholderName = placeholderComponentNameValue || placeholderComponentName
@@ -113,7 +116,7 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
       mdFile,
       componentVuePath,
       componentName,
-      'dynamicImport',
+      ssgValue ? undefined : 'dynamicImport',
     )
   }
   if (componentReactPath) {
@@ -131,17 +134,18 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
       mdFile,
       componentReactPath,
       reactComponentName,
-      'dynamicImport',
+      ssgValue ? undefined : 'dynamicImport',
     )
   }
 
   const placeholderVisibleKey = `__placeholder_visible_${componentName}_${demoIndex}__`
+  const placeholderInitialValue = ssgValue ? 'false' : 'true'
 
   // 控制 placeholder 的显示
   injectComponentImportScript(
     mdFile,
     placeholderVisibleKey,
-    `const ${placeholderVisibleKey} = ref(true);`,
+    `const ${placeholderVisibleKey} = ref(${placeholderInitialValue});`,
     'inject',
   )
 
@@ -375,13 +379,19 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
   )
 
   const hiddenHighlightBlocks = highlightDomSnippets.join('\n')
+  const placeholderBlock = ssgValue
+    ? ''
+    : `<${placeholderName} v-show="${placeholderVisibleKey}" />`
+  const clientOnlyOpen = ssgValue ? '' : '<ClientOnly>'
+  const clientOnlyClose = ssgValue ? '' : '</ClientOnly>'
+  const wrapperVisibilityAttr = ssgValue ? '' : `\n      v-show="!${placeholderVisibleKey}"`
 
   const sourceCode = `
   ${hiddenHighlightBlocks}
-  <${placeholderName} v-show="${placeholderVisibleKey}" />
-  <ClientOnly>
+  ${placeholderBlock}
+  ${clientOnlyOpen}
     <${wrapperName}
-      v-show="!${placeholderVisibleKey}"
+      ${wrapperVisibilityAttr}
       v-bind='${JSON.stringify(restProps)}'
       stackblitz="${encodeURIComponent(JSON.stringify(stackblitz))}"
       codesandbox="${encodeURIComponent(JSON.stringify(codesandbox))}"
@@ -426,7 +436,7 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
           : ''
       }
     </${wrapperName}>
-  </ClientOnly>`.trim()
+  ${clientOnlyClose}`.trim()
 
   return sourceCode
 }

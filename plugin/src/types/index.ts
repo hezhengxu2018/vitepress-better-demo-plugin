@@ -105,6 +105,11 @@ export interface VitepressDemoBoxConfig {
    */
   demoDir?: string
   /**
+   * @cn æ˜¯å¦åœ¨ SSG æ—¶ç›´æŽ¥æ¸²æŸ“ demo
+   * @en Whether to render demos during SSG instead of ClientOnly
+   */
+  ssg?: boolean
+  /**
    * @cn 代码切换 tab 的配置
    * @en The configuration of the code switch tab
    */
