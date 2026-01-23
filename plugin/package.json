@@ -5,7 +5,7 @@
   "description": "A vitepress plugin to preview component and display code",
   "author": "hezhengxu",
   "license": "MIT",
-  "homepage": "https://vitepress-better-demo-plugin.pages.dev/",
+  "homepage": "https://vitepress-better-demo-plugin.silver-fe.dev/",
   "repository": {
     "type": "git",
     "url": "git@github.com:hezhengxu2018/vitepress-better-demo-plugin.git"

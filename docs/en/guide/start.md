@@ -1,3 +1,9 @@
+---
+title: Quick Start
+description: Install and wire up vitepress-better-demo-plugin to showcase Vue, React, and HTML demos with live playground links.
+image: /logo.svg
+---
+
 # Quick Start
 
 This section of the documentation is identical to `vitepress-demo-plugin`.

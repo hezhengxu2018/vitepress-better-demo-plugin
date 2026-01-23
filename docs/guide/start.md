@@ -1,3 +1,9 @@
+---
+title: 快速开始
+description: 几分钟内安装并注册 vitepress-better-demo-plugin，在 VitePress 中同时渲染 Vue、React、HTML Demo。
+image: /logo.svg
+---
+
 # 快速开始
 
 ::: tip 提示

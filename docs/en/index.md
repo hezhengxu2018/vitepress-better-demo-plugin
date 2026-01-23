@@ -1,4 +1,7 @@
 ---
+title: VitePress Better Demo Plugin Docs
+description: Document the VitePress Better Demo Plugin that renders synced Vue, React, and HTML demos with StackBlitz and CodeSandbox hand-offs.
+image: /logo.svg
 # https://vitepress.dev/reference/default-theme-home-page
 layout: home
 

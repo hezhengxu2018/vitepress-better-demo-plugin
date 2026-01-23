@@ -20,6 +20,11 @@ function fileURLToPath(fileURL: string) {
   return filePath
 }
 
+const currentDir = dirname(fileURLToPath(import.meta.url))
+const siteUrl = 'https://vitepress-better-demo-plugin.silver-fe.dev'
+const defaultTitle = 'Vitepress Better Demo Plugin'
+const defaultDescription = '在 VitePress 中用一个 demo 组件统一展示 Vue、React、HTML 示例，并一键跳转到 StackBlitz / CodeSandbox。'
+const socialImage = `${siteUrl}/logo.svg`
 const srcMain = `import { createApp } from "vue";
 import Demo from "./Demo.vue";
 import 'element-plus/dist/index.css'
@@ -28,10 +33,7 @@ const app = createApp(Demo);
 app.mount("#app");`
 
 const vitepressDemoPluginConfig: VitepressDemoBoxConfig = {
-  demoDir: path.resolve(
-    dirname(fileURLToPath(import.meta.url)),
-    '../demos',
-  ),
+  demoDir: path.resolve(currentDir, '../demos'),
   stackblitz: {
     show: true,
     templates: [
@@ -58,8 +60,31 @@ const vitepressDemoPluginConfig: VitepressDemoBoxConfig = {
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: 'Vitepress Better Demo Plugin',
-  description: 'The docs of vitepress-better-demo-plugin',
+  title: defaultTitle,
+  titleTemplate: ':title | Vitepress Better Demo Plugin',
+  description: defaultDescription,
+  cleanUrls: true,
+  lastUpdated: true,
+  sitemap: {
+    hostname: siteUrl,
+  },
+  head: [
+    ['link', { rel: 'icon', href: '/favicon.ico', type: 'image/x-icon' }],
+    ['link', { rel: 'apple-touch-icon', href: '/logo.svg' }],
+    ['meta', { name: 'theme-color', content: '#2563eb' }],
+    ['meta', { name: 'author', content: 'Hezhengxu' }],
+    ['meta', { name: 'description', content: defaultDescription }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:site_name', content: defaultTitle }],
+    ['meta', { property: 'og:title', content: defaultTitle }],
+    ['meta', { property: 'og:description', content: defaultDescription }],
+    ['meta', { property: 'og:url', content: siteUrl }],
+    ['meta', { property: 'og:image', content: socialImage }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:title', content: defaultTitle }],
+    ['meta', { name: 'twitter:description', content: defaultDescription }],
+    ['meta', { name: 'twitter:image', content: socialImage }],
+  ],
   themeConfig: {
     sidebar: [
       {

@@ -1,4 +1,7 @@
 ---
+title: Vitepress Better Demo Plugin 文档
+description: 在 VitePress 中一处配置，即可把 Vue、React、HTML 多语法 Demo 与 StackBlitz、CodeSandbox 集成到文档站。
+image: /logo.svg
 # https://vitepress.dev/reference/default-theme-home-page
 layout: home
 

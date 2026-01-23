@@ -2,8 +2,8 @@
 
 > A better demo experience for VitePress - render Vue/React/HTML demos, keep code in sync, and jump into online sandboxes with one tag.
 
-Docs (Chinese): https://vitepress-better-demo-plugin.pages.dev/
-Docs (English): https://vitepress-better-demo-plugin.pages.dev/en/
+Docs (Chinese): https://vitepress-better-demo-plugin.silver-fe.dev/
+Docs (English): https://vitepress-better-demo-plugin.silver-fe.dev/en/
 Forked from `vitepress-demo-plugin@1.5.0`, currently `0.0.1` (released 2025-11-29). Licensed MIT.
 
 ## Features
