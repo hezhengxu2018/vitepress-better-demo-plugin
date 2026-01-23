@@ -1,5 +1,14 @@
 # 更新日志
 
+
+
+# [0.4.0](/compare/v0.3.1...v0.4.0) (2026-01-23)
+
+
+### Features
+
+* 添加支持在SSG中直接渲染demo的选项 32c7f07
+
 ## [Unreleased]
 
 ### Features
