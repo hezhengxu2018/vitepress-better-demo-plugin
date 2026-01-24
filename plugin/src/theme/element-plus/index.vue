@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { VitepressDemoBoxProps } from '@/types'
-import { ref, useSlots, watch } from 'vue'
 import { ElCollapseTransition, ElIcon, ElMessage, ElRadio, ElRadioButton, ElRadioGroup, ElTooltip } from 'element-plus'
+import { ref, useSlots, watch } from 'vue'
 import { useDemoBox } from '@/shared/composables/useDemoBox'
 import { COMPONENT_TYPE } from '@/shared/constant'
 import { i18n } from '@/shared/locales/i18n'

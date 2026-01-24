@@ -394,10 +394,10 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
             const domKey = isTwoslashMeta(metaByType[key])
               ? ''
               : registerHighlightDom(
-                key,
-                highlighted,
-                file,
-              )
+                  key,
+                  highlighted,
+                  file,
+                )
             if (domKey)
               files[key][file].htmlDomKey = domKey
           }

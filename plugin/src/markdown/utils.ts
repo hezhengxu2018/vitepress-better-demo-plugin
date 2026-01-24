@@ -89,13 +89,15 @@ function applyDemoAttributeDefaults(
     normalized.ssg = options.defaults.ssg
 
   const rawCodeFold = normalized.codeFold
-  if (typeof rawCodeFold === 'number')
+  if (typeof rawCodeFold === 'number') {
     normalized.codeFold = Boolean(rawCodeFold)
+  }
   else if (
     rawCodeFold === undefined
     && typeof options.defaults?.codeFold === 'boolean'
-  )
+  ) {
     normalized.codeFold = options.defaults.codeFold
+  }
 
   return normalized
 }
@@ -106,7 +108,7 @@ function normalizeDemoAttributeKey(rawKey: string) {
     return ''
   if (!trimmed.includes('-'))
     return trimmed
-  return trimmed.replace(/-([a-zA-Z0-9])/g, (_, char: string) => char.toUpperCase())
+  return trimmed.replace(/-([a-z0-9])/gi, (_, char: string) => char.toUpperCase())
 }
 
 export function parseFilesAttribute(input: unknown): CodeFiles | undefined {

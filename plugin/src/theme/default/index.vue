@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentType, VitepressDemoBoxProps } from '@/types'
-import { useDemoBox } from '@/shared/composables/useDemoBox'
 import { ref, useSlots, watch } from 'vue'
+import { useDemoBox } from '@/shared/composables/useDemoBox'
 import { COMPONENT_TYPE } from '@/shared/constant'
 import { i18n } from '@/shared/locales/i18n'
 import { useDefaultNameSpace } from '../../shared/utils/namespace'
