@@ -1,7 +1,7 @@
 ﻿# 进阶配置
 
 ::: tip 提示
-本章节文档与`vitepress-demo-plugin`除[代码主题](#代码主题)和[代码块-meta](#代码块-meta例twoslash)不一致之外完全相同。
+本章节文档与`vitepress-demo-plugin`除[代码主题](#代码主题)不一致之外完全相同。
 :::
 
 ## 指定目录
@@ -332,37 +332,6 @@ export default {
 ## 代码主题
 
 `vitepress-better-demo-plugin` 的代码块展示现在使用Vitepress内置的shiki进行渲染，如果想修改代码主题请参考[Vitepress官方文档](https://vitepress.dev/zh/reference/site-config#markdown)。
-
-## 代码块 Meta（例：twoslash）
-
-如果你已经在 VitePress 配置了 `@shikijs/vitepress-twoslash`，可以通过 `codeMeta` / `vueMeta` / `reactMeta` / `htmlMeta` 把对应的 meta 追加到代码块语言后，以便 `twoslash` 后缀正确传入。
-
-### 全局配置
-
-```ts
-import { defineConfig } from 'vitepress';
-import { vitepressDemoPlugin } from 'vitepress-better-demo-plugin';
-
-export default defineConfig({
-  markdown: {
-    config(md) {
-      md.use(vitepressDemoPlugin, {
-        codeMeta: 'twoslash',
-        // vueMeta/reactMeta/htmlMeta 会覆盖 codeMeta
-      });
-    },
-  },
-});
-```
-
-### 局部覆盖
-
-```html
-<demo vue="demo.vue" vue-meta="twoslash" />
-<demo react="demo.tsx" code-meta="twoslash" />
-```
-
-<demo vue="demo.vue" vue-meta="twoslash" />
 
 ## 国际化
 

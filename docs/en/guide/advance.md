@@ -1,7 +1,7 @@
 ﻿# Advanced Configuration
 
 ::: tip Tip
-This section of the documentation is identical to `vitepress-demo-plugin` except for the [Code Theme](#code-theme) and [Code Block Meta](#code-block-meta-eg-twoslash) sections.
+This section of the documentation is identical to `vitepress-demo-plugin` except for the [Code Theme](#code-theme) section.
 :::
 
 ## Specify Directory
@@ -353,37 +353,6 @@ export default defineConfig({
   },
 });
 ```
-
-## Code Block Meta (e.g. twoslash)
-
-If you have enabled `@shikijs/vitepress-twoslash` in VitePress, you can append meta to the code fence language via `codeMeta` / `vueMeta` / `reactMeta` / `htmlMeta` so the `twoslash` suffix is passed through.
-
-### Global config
-
-```ts
-import { defineConfig } from 'vitepress';
-import { vitepressDemoPlugin } from 'vitepress-better-demo-plugin';
-
-export default defineConfig({
-  markdown: {
-    config(md) {
-      md.use(vitepressDemoPlugin, {
-        codeMeta: 'twoslash',
-        // vueMeta/reactMeta/htmlMeta override codeMeta
-      });
-    },
-  },
-});
-```
-
-### Local override
-
-```html
-<demo vue="demo.vue" vue-meta="twoslash" />
-<demo react="demo.tsx" code-meta="twoslash" />
-```
-
-<demo vue="demo.vue" vue-meta="twoslash" />
 
 ## Internationalization
 
