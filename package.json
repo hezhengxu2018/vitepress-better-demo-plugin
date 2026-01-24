@@ -10,6 +10,7 @@
     "dev": "pnpm -C ./docs docs:dev",
     "build": "pnpm -r build",
     "build:doc": "pnpm -C ./docs docs:build",
+    "release": "pnpm -C plugin release",
     "lint": "eslint --fix",
     "commit": "czg",
     "lint-staged": "lint-staged",
