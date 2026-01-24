@@ -224,7 +224,7 @@ function handleSourceAfterLeave() {
     box-sizing: border-box;
     padding: 20px 20px 30px 20px;
     border-radius: 4px 4px 0 0;
-    ;
+    overflow-x: auto;
 
     &>p {
       margin: 0;
