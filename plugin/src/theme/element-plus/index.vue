@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { VitepressDemoBoxProps } from '@/types'
+import { ref, useSlots, watch } from 'vue'
 import { ElCollapseTransition, ElIcon, ElMessage, ElRadio, ElRadioButton, ElRadioGroup, ElTooltip } from 'element-plus'
 import { useDemoBox } from '@/shared/composables/useDemoBox'
 import { COMPONENT_TYPE } from '@/shared/constant'
@@ -27,6 +28,7 @@ const props = withDefaults(defineProps<VitepressDemoBoxProps>(), {
 })
 
 const emit = defineEmits(['mount'])
+const slots = useSlots()
 
 function onCopySuccess() {
   ElMessage.success(i18n.value.copySuccess)
@@ -52,7 +54,18 @@ const {
   onCopySuccess,
 })
 
+const showCode = ref(!isCodeFold.value)
+
+watch(isCodeFold, (folded) => {
+  if (!folded)
+    showCode.value = true
+})
+
 const ns = useEpNameSpace()
+
+function handleSourceAfterLeave() {
+  showCode.value = false
+}
 </script>
 
 <template>
@@ -128,21 +141,34 @@ const ns = useEpNameSpace()
       </section>
       <!-- 代码展示区 -->
       <section :class="[ns.bem('source')]">
-        <ElCollapseTransition>
+        <ElCollapseTransition @after-leave="handleSourceAfterLeave">
           <div v-show="!isCodeFold">
-            <div v-if="Object.keys(currentFiles).length" :class="[ns.bem('file-tabs')]">
-              <ElRadioGroup v-model="activeFile">
-                <ElRadioButton
-                  v-for="file in Object.keys(currentFiles)"
-                  :key="file"
-                  size="small"
-                  :value="file"
-                >
-                  {{ file }}
-                </ElRadioButton>
-              </ElRadioGroup>
-            </div>
-            <div v-html="currentCodeHtml" />
+            <template v-if="showCode">
+              <div v-if="Object.keys(currentFiles).length" :class="[ns.bem('file-tabs')]">
+                <ElRadioGroup v-model="activeFile">
+                  <ElRadioButton
+                    v-for="file in Object.keys(currentFiles)"
+                    :key="file"
+                    size="small"
+                    :value="file"
+                  >
+                    {{ file }}
+                  </ElRadioButton>
+                </ElRadioGroup>
+              </div>
+              <template v-if="type === 'vue' && slots['code-vue']">
+                <slot name="code-vue" />
+              </template>
+              <template v-else-if="type === 'react' && slots['code-react']">
+                <slot name="code-react" />
+              </template>
+              <template v-else-if="type === 'html' && slots['code-html']">
+                <slot name="code-html" />
+              </template>
+              <template v-else>
+                <div v-if="currentCodeHtml" v-html="currentCodeHtml" />
+              </template>
+            </template>
           </div>
         </ElCollapseTransition>
 

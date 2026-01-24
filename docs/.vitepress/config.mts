@@ -2,6 +2,7 @@ import type MarkdownIt from 'markdown-it'
 import type { VitepressDemoBoxConfig } from 'vitepress-better-demo-plugin'
 import path, { dirname } from 'node:path'
 import process from 'node:process'
+import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
 import mdContainer from 'markdown-it-container'
 import { defineConfig } from 'vitepress'
 import { createDemoContainer, vitepressDemoPlugin } from 'vitepress-better-demo-plugin'
@@ -178,5 +179,8 @@ export default defineConfig({
       md.use(mdContainer, 'demo', createDemoContainer(md, vitepressDemoPluginConfig))
       md.use<VitepressDemoBoxConfig>(vitepressDemoPlugin, vitepressDemoPluginConfig)
     },
+    codeTransformers: [
+      transformerTwoslash(),
+    ],
   },
 })

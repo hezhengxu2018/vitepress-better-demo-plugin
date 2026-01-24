@@ -40,7 +40,7 @@ Then pass the related props to switch the theme on any demo:
 
 Rendered output:
 
-<demo react="../demos/demo.tsx" wrapperComponentName="VitepressEpDemoBox" placeholderComponentName="VitepressEpDemoPlaceholder" />
+<demo react="../demos/demo.tsx" wrapperComponentName="VitepressEpDemoBox" placeholderComponentName="VitepressEpDemoPlaceholder" code-meta="twoslash" />
 
 With this configuration you can mix both container styles on the same documentation site. When no props are supplied the default container is used:
 

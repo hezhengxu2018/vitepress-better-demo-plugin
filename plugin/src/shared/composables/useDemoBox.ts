@@ -247,6 +247,46 @@ export function useDemoBox(
     },
     { flush: 'post' },
   )
+
+  const dispatchTwoslashRecompute = () => {
+    if (typeof window === 'undefined') {
+      return
+    }
+    window.dispatchEvent(new Event('vitepress:codeGroupTabActivate'))
+  }
+
+  const scheduleTwoslashRecompute = () => {
+    nextTick(() => {
+      dispatchTwoslashRecompute()
+    })
+  }
+
+  watch(
+    type,
+    () => {
+      if (!isCodeFold.value)
+        scheduleTwoslashRecompute()
+    },
+    { flush: 'post' },
+  )
+
+  watch(
+    activeFile,
+    () => {
+      if (!isCodeFold.value)
+        scheduleTwoslashRecompute()
+    },
+    { flush: 'post' },
+  )
+
+  watch(
+    isCodeFold,
+    (folded) => {
+      if (!folded)
+        scheduleTwoslashRecompute()
+    },
+    { flush: 'post' },
+  )
   function setHTMLWithScript() {
     nextTick(() => {
       if (!htmlContainerRef.value || !props.htmlCode) {

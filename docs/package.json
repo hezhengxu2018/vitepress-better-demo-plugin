@@ -7,6 +7,7 @@
   },
   "devDependencies": {
     "@emotion/styled": "^11.13.0",
+    "@shikijs/vitepress-twoslash": "^2.5.0",
     "@types/markdown-it": "^14",
     "@types/markdown-it-container": "^2",
     "@types/react": "^18.3.5",

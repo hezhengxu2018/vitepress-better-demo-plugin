@@ -42,7 +42,7 @@ export default {
 
 渲染效果如下：
 
-<demo react="../demos/demo.tsx" wrapperComponentName="VitepressEpDemoBox" placeholderComponentName="VitepressEpDemoPlaceholder" />
+<demo react="../demos/demo.tsx" wrapperComponentName="VitepressEpDemoBox" placeholderComponentName="VitepressEpDemoPlaceholder" code-meta="twoslash" />
 
 这样配置可以在同一个文档网站中使用两种风格的demo容器，当不指定时就会使用默认容器：
 

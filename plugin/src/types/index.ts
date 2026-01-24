@@ -164,6 +164,26 @@ export interface VitepressDemoBoxConfig {
    * @en The custom component name of the preview loading component， need to be registered by yourself
    */
   placeholderComponentName?: string
+  /**
+   * @cn 追加到代码块语言后的通用 meta（例如 twoslash）
+   * @en Meta appended after the code block language (e.g. twoslash)
+   */
+  codeMeta?: string
+  /**
+   * @cn Vue 代码块专用 meta（优先级高于 codeMeta）
+   * @en Meta for Vue code blocks (overrides codeMeta)
+   */
+  vueMeta?: string
+  /**
+   * @cn React 代码块专用 meta（优先级高于 codeMeta）
+   * @en Meta for React code blocks (overrides codeMeta)
+   */
+  reactMeta?: string
+  /**
+   * @cn Html 代码块专用 meta（优先级高于 codeMeta）
+   * @en Meta for Html code blocks (overrides codeMeta)
+   */
+  htmlMeta?: string
 }
 
 export type MarkdownRule = MarkdownRenderer['renderer']['rules']['html_inline']

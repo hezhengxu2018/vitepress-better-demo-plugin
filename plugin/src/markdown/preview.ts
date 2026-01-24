@@ -33,6 +33,10 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
     placeholderComponentName = 'vitepress-demo-placeholder',
     autoImportWrapper = true,
     ssg: configSsgValue = false,
+    codeMeta: configCodeMeta,
+    vueMeta: configVueMeta,
+    reactMeta: configReactMeta,
+    htmlMeta: configHtmlMeta,
   } = config || {}
 
   const attributes = parseDemoAttributes(token.content)
@@ -48,6 +52,14 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
     wrapperComponentName: wrapperComponentNameValue,
     placeholderComponentName: placeholderComponentNameValue,
     ssg: ssgAttr,
+    codeMeta: codeMetaAttr,
+    vueMeta: vueMetaAttr,
+    reactMeta: reactMetaAttr,
+    htmlMeta: htmlMetaAttr,
+    'code-meta': codeMetaAttrKebab,
+    'vue-meta': vueMetaAttrKebab,
+    'react-meta': reactMetaAttrKebab,
+    'html-meta': htmlMetaAttrKebab,
     ...restProps
   } = attributes
 
@@ -64,6 +76,39 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
 
   applyPlatformValue(stackblitz, stackblitzAttr)
   applyPlatformValue(codesandbox, codesandboxAttr)
+
+  const normalizeMeta = (value: unknown) => {
+    if (typeof value !== 'string')
+      return ''
+    return value.trim()
+  }
+
+  const resolvedCodeMeta = codeMetaAttrKebab ?? codeMetaAttr
+  const resolveMetaByType = (type: 'vue' | 'react' | 'html') => {
+    const attrMeta = type === 'vue'
+      ? vueMetaAttrKebab ?? vueMetaAttr
+      : type === 'react'
+        ? reactMetaAttrKebab ?? reactMetaAttr
+        : htmlMetaAttrKebab ?? htmlMetaAttr
+    const configMeta = type === 'vue'
+      ? configVueMeta
+      : type === 'react'
+        ? configReactMeta
+        : configHtmlMeta
+    return normalizeMeta(
+      attrMeta ?? resolvedCodeMeta ?? configMeta ?? configCodeMeta,
+    )
+  }
+
+  const metaByType = {
+    vue: resolveMetaByType('vue'),
+    react: resolveMetaByType('react'),
+    html: resolveMetaByType('html'),
+  }
+
+  const isTwoslashMeta = (meta?: string) => {
+    return !!meta && meta.includes('twoslash')
+  }
 
   const componentVuePath = vuePathValue
     ? path
@@ -246,11 +291,17 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
     return alias[ext] || ext
   }
 
-  const renderHighlightedCode = (code: string, lang: string) => {
+  const buildFenceInfo = (lang: string, meta?: string) => {
+    const normalizedMeta = meta?.trim()
+    return normalizedMeta ? `${lang} ${normalizedMeta}` : lang
+  }
+
+  const renderHighlightedCode = (code: string, lang: string, meta?: string) => {
     if (!code)
       return ''
     try {
-      const fencedCode = `\`\`\` ${lang}\n${code}\n\`\`\``
+      const info = buildFenceInfo(lang, meta)
+      const fencedCode = `\`\`\` ${info}\n${code}\n\`\`\``
       return md.render(fencedCode)
     }
     catch (_error) {
@@ -281,6 +332,7 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
       highlightedCode[type] = renderHighlightedCode(
         source,
         resolveLangByFile(absPath),
+        metaByType[type],
       )
     }
     catch (_error) {
@@ -337,13 +389,16 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
             const highlighted = renderHighlightedCode(
               code,
               resolveLangByFile(filePath),
+              metaByType[key],
             )
             files[key][file].html = highlighted
-            const domKey = registerHighlightDom(
-              key,
-              highlighted,
-              file,
-            )
+            const domKey = isTwoslashMeta(metaByType[key])
+              ? ''
+              : registerHighlightDom(
+                key,
+                highlighted,
+                file,
+              )
             if (domKey)
               files[key][file].htmlDomKey = domKey
           }
@@ -366,16 +421,33 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
 
   if (componentVuePath) {
     collectHighlightedCode('vue', componentVuePath)
-    registerHighlightDom('vue', highlightedCode.vue)
+    if (!isTwoslashMeta(metaByType.vue))
+      registerHighlightDom('vue', highlightedCode.vue)
   }
   if (componentReactPath) {
     collectHighlightedCode('react', componentReactPath)
-    registerHighlightDom('react', highlightedCode.react)
+    if (!isTwoslashMeta(metaByType.react))
+      registerHighlightDom('react', highlightedCode.react)
   }
   if (componentHtmlPath) {
     collectHighlightedCode('html', componentHtmlPath)
-    registerHighlightDom('html', highlightedCode.html)
+    if (!isTwoslashMeta(metaByType.html))
+      registerHighlightDom('html', highlightedCode.html)
   }
+
+  const useSlotByType = {
+    vue: !Object.keys(files.vue).length && isTwoslashMeta(metaByType.vue) && !!highlightedCode.vue,
+    react: !Object.keys(files.react).length && isTwoslashMeta(metaByType.react) && !!highlightedCode.react,
+    html: !Object.keys(files.html).length && isTwoslashMeta(metaByType.html) && !!highlightedCode.html,
+  }
+
+  const codeSlotTemplates = [
+    useSlotByType.vue ? `<template #code-vue>${highlightedCode.vue}</template>` : '',
+    useSlotByType.react ? `<template #code-react>${highlightedCode.react}</template>` : '',
+    useSlotByType.html ? `<template #code-html>${highlightedCode.html}</template>` : '',
+  ]
+    .filter(Boolean)
+    .join('\n')
 
   const encodedCodeHighlights = encodeURIComponent(
     JSON.stringify(highlightedCode),
@@ -448,6 +520,7 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
             `
           : ''
       }
+      ${codeSlotTemplates}
     </${wrapperName}>
   ${clientOnlyClose}`.trim()
 

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentType, VitepressDemoBoxProps } from '@/types'
 import { useDemoBox } from '@/shared/composables/useDemoBox'
+import { ref, useSlots, watch } from 'vue'
 import { COMPONENT_TYPE } from '@/shared/constant'
 import { i18n } from '@/shared/locales/i18n'
 import { useDefaultNameSpace } from '../../shared/utils/namespace'
@@ -28,7 +29,7 @@ const props = withDefaults(defineProps<VitepressDemoBoxProps>(), {
 })
 
 const emit = defineEmits(['mount'])
-
+const slots = useSlots()
 const {
   stackblitz,
   codesandbox,
@@ -47,6 +48,12 @@ const {
   reactContainerRef,
 } = useDemoBox(props, emit, {
   onCopySuccess: () => MessageService.open(i18n.value.copySuccess),
+})
+const showCode = ref(!isCodeFold.value)
+
+watch(isCodeFold, (folded) => {
+  if (!folded)
+    showCode.value = true
 })
 
 function setCodeType(tab: ComponentType) {
@@ -81,6 +88,11 @@ function handleSourceLeave(el: Element) {
     element.style.transition = 'height 0.3s ease'
     element.style.height = '0px'
   })
+}
+
+function handleSourceAfterLeave(el: Element) {
+  cleanupSourceTransitionStyle(el)
+  showCode.value = false
 }
 </script>
 
@@ -160,7 +172,7 @@ function handleSourceLeave(el: Element) {
       @enter="handleSourceEnter"
       @after-enter="cleanupSourceTransitionStyle"
       @leave="handleSourceLeave"
-      @after-leave="cleanupSourceTransitionStyle"
+      @after-leave="handleSourceAfterLeave"
     >
       <section
         v-show="!isCodeFold"
@@ -182,8 +194,21 @@ function handleSourceLeave(el: Element) {
             {{ file }}
           </div>
         </div>
-        <div v-if="currentCodeHtml" v-html="currentCodeHtml" />
-        <pre v-else class="language-plaintext"><code>{{ currentCode || '' }}</code></pre>
+        <template v-if="showCode">
+          <template v-if="type === 'vue' && slots['code-vue']">
+            <slot name="code-vue" />
+          </template>
+          <template v-else-if="type === 'react' && slots['code-react']">
+            <slot name="code-react" />
+          </template>
+          <template v-else-if="type === 'html' && slots['code-html']">
+            <slot name="code-html" />
+          </template>
+          <template v-else>
+            <div v-if="currentCodeHtml" v-html="currentCodeHtml" />
+            <pre v-else class="language-plaintext"><code>{{ currentCode || '' }}</code></pre>
+          </template>
+        </template>
       </section>
     </Transition>
 
