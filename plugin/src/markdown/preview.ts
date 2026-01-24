@@ -54,8 +54,8 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
   const ssgValue = typeof ssgAttr === 'boolean'
     ? ssgAttr
     : typeof ssgAttr === 'number'
-        ? Boolean(ssgAttr)
-        : configSsgValue
+      ? Boolean(ssgAttr)
+      : configSsgValue
 
   const wrapperName = wrapperComponentNameValue || wrapperComponentName
   const placeholderName = placeholderComponentNameValue || placeholderComponentName
