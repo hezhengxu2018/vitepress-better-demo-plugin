@@ -4,7 +4,7 @@
 
 [中文 README](./README.md) · [Docs (ZH)](https://vitepress-better-demo-plugin.silver-fe.dev/) · [Docs (EN)](https://vitepress-better-demo-plugin.silver-fe.dev/en/)
 
-Forked from `vitepress-demo-plugin@1.5.0`, now released as `0.4.0` on 2026-01-23 (SSG rendering restored). Licensed MIT.
+Forked from `vitepress-demo-plugin@1.5.0`. Licensed MIT.
 
 ## Highlights
 

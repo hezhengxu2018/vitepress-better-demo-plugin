@@ -4,7 +4,7 @@
 
 [English README](./README.en.md) · [文档（中文）](https://vitepress-better-demo-plugin.silver-fe.dev/) · [Docs (English)](https://vitepress-better-demo-plugin.silver-fe.dev/en/)
 
-从 `vitepress-demo-plugin@1.5.0` fork，并在 2026-01-23 发布 `0.4.0`（最新版本，SSG 渲染全面回归）。License: MIT。
+从 `vitepress-demo-plugin@1.5.0` fork。License: MIT。
 
 ## 核心特性
 
