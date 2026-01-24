@@ -103,6 +103,8 @@ export default defineConfig({
 <demo vue="../demos/demo.vue" ssg />
 ```
 
+<demo vue="../demos/demo.vue" ssg />
+
 ## 展示顺序和默认选中
 
 ### 局部配置

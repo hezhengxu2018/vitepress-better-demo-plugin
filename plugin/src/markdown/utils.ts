@@ -32,7 +32,7 @@ export function parseDemoAttributes(content: string): AttributeMap {
     const normalizedValue = stripOuterQuotes((rawValue ?? '').trim())
     attributes[rawKey] = isBound
       ? coerceBoundExpression(normalizedValue)
-      : normalizedValue
+      : coerceLiteralAttribute(normalizedValue)
   }
   return attributes
 }
@@ -205,6 +205,26 @@ function coerceBoundExpression(value: string): unknown {
   const { success, value: parsed } = tryParseJsonLike(trimmed)
   if (success)
     return parsed
+  return trimmed
+}
+
+function coerceLiteralAttribute(value: string): unknown {
+  const trimmed = value.trim()
+  if (!trimmed)
+    return ''
+  const lowered = trimmed.toLowerCase()
+  if (!lowered || lowered === 'true' || lowered === '1' || lowered === 'yes')
+    return true
+  if (lowered === 'false' || lowered === '0' || lowered === 'no')
+    return false
+  if (lowered === 'null')
+    return null
+  if (lowered === 'undefined')
+    return undefined
+  if (lowered === 'nan')
+    return Number.NaN
+  if (/^-?\d+(?:\.\d+)?$/.test(trimmed))
+    return Number(trimmed)
   return trimmed
 }
 

@@ -53,7 +53,9 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
 
   const ssgValue = typeof ssgAttr === 'boolean'
     ? ssgAttr
-    : configSsgValue
+    : typeof ssgAttr === 'number'
+        ? Boolean(ssgAttr)
+        : configSsgValue
 
   const wrapperName = wrapperComponentNameValue || wrapperComponentName
   const placeholderName = placeholderComponentNameValue || placeholderComponentName
@@ -95,7 +97,8 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
     )
     .replace(/\\/g, '/')
 
-  const componentName = composeComponentName(absolutePath)
+  const componentAlias = composeComponentName(absolutePath)
+  const componentName = ssgValue ? `${componentAlias}Ssg` : componentAlias
   const reactComponentName = `react${componentName}`
 
   // 启用自动导入包装组件
@@ -138,16 +141,19 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
     )
   }
 
-  const placeholderVisibleKey = `__placeholder_visible_${componentName}_${demoIndex}__`
-  const placeholderInitialValue = ssgValue ? 'false' : 'true'
+  const placeholderVisibleKey = ssgValue
+    ? null
+    : `__placeholder_visible_${componentName}_${demoIndex}__`
 
   // 控制 placeholder 的显示
-  injectComponentImportScript(
-    mdFile,
-    placeholderVisibleKey,
-    `const ${placeholderVisibleKey} = ref(${placeholderInitialValue});`,
-    'inject',
-  )
+  if (placeholderVisibleKey) {
+    injectComponentImportScript(
+      mdFile,
+      placeholderVisibleKey,
+      `const ${placeholderVisibleKey} = ref(true);`,
+      'inject',
+    )
+  }
 
   // 组件代码，动态引入以便实时更新
   const htmlCodeTempVariable = componentHtmlPath
@@ -379,12 +385,20 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
   )
 
   const hiddenHighlightBlocks = highlightDomSnippets.join('\n')
-  const placeholderBlock = ssgValue
-    ? ''
-    : `<${placeholderName} v-show="${placeholderVisibleKey}" />`
+  const placeholderBlock = placeholderVisibleKey
+    ? `<${placeholderName} v-show="${placeholderVisibleKey}" />`
+    : ''
   const clientOnlyOpen = ssgValue ? '' : '<ClientOnly>'
   const clientOnlyClose = ssgValue ? '' : '</ClientOnly>'
-  const wrapperVisibilityAttr = ssgValue ? '' : `\n      v-show="!${placeholderVisibleKey}"`
+  const wrapperVisibilityAttr = placeholderVisibleKey
+    ? `\n      v-show="!${placeholderVisibleKey}"`
+    : ''
+  const mountHandlerAttr = placeholderVisibleKey
+    ? `\n      @mount="() => { ${placeholderVisibleKey} = false; }"`
+    : ''
+  const vueMountedAttr = placeholderVisibleKey
+    ? ` @vue:mounted="() => { ${placeholderVisibleKey} = false; }"`
+    : ''
 
   const sourceCode = `
   ${hiddenHighlightBlocks}
@@ -398,8 +412,7 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
       files="${encodeURIComponent(JSON.stringify(files))}"
       codeHighlights="${encodedCodeHighlights}"
       codeHighlightDomKeys="${encodedInlineHighlightDomKeys}"
-      locale="${locale}"
-      @mount="() => { ${placeholderVisibleKey} = false; }"
+      locale="${locale}"${mountHandlerAttr}
       ${
         componentHtmlPath
           ? `
@@ -430,7 +443,7 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
         componentVuePath
           ? `
             <template v-if="${componentName}" #vue>
-              <${componentName} @vue:mounted="() => { ${placeholderVisibleKey} = false; }"></${componentName}>
+              <${componentName}${vueMountedAttr}></${componentName}>
             </template>
             `
           : ''

@@ -103,6 +103,8 @@ export default defineConfig({
 <demo vue="../demos/demo.vue" ssg />
 ```
 
+<demo vue="../demos/demo.vue" ssg />
+
 ## Display Order And Default Selection
 
 ### Local Configuration
