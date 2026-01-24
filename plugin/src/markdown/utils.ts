@@ -1,13 +1,23 @@
 import type Token from 'markdown-it/lib/token'
-import type { CodeFiles } from '@/types'
+import type { CodeFiles, Platform, VitepressDemoBoxConfig } from '@/types'
 
 export type AttributeMap = Record<string, unknown>
 
-export function parseDemoAttributes(content: string): AttributeMap {
+export interface ParseDemoAttributesOptions {
+  defaults?: {
+    ssg?: boolean
+    codeFold?: boolean
+  }
+}
+
+export function parseDemoAttributes(
+  content: string,
+  options: ParseDemoAttributesOptions = {},
+): AttributeMap {
   const attributes: AttributeMap = {}
   const source = extractDemoAttributeSource(content)
   if (!source)
-    return attributes
+    return applyDemoAttributeDefaults(attributes, options)
   const fragments = mergeAttributeTokens(splitAttributeTokens(source))
   for (const fragment of fragments) {
     // eslint-disable-next-line regexp/no-super-linear-backtracking
@@ -29,12 +39,74 @@ export function parseDemoAttributes(content: string): AttributeMap {
     }
     if (!rawKey)
       continue
+    const normalizedKey = normalizeDemoAttributeKey(rawKey)
+    if (!normalizedKey)
+      continue
     const normalizedValue = stripOuterQuotes((rawValue ?? '').trim())
-    attributes[rawKey] = isBound
+    attributes[normalizedKey] = isBound
       ? coerceBoundExpression(normalizedValue)
       : coerceLiteralAttribute(normalizedValue)
   }
-  return attributes
+  return applyDemoAttributeDefaults(attributes, options)
+}
+
+export function normalizeDemoConfig(config?: VitepressDemoBoxConfig) {
+  const stackblitz: Platform = {
+    ...(config?.stackblitz || {}),
+    show: typeof config?.stackblitz?.show === 'boolean'
+      ? config.stackblitz.show
+      : false,
+  }
+
+  const codesandbox: Platform = {
+    ...(config?.codesandbox || {}),
+    show: typeof config?.codesandbox?.show === 'boolean'
+      ? config.codesandbox.show
+      : false,
+  }
+
+  return {
+    ...(config || {}),
+    stackblitz,
+    codesandbox,
+    wrapperComponentName: config?.wrapperComponentName ?? 'vitepress-demo-box',
+    placeholderComponentName: config?.placeholderComponentName ?? 'vitepress-demo-placeholder',
+    autoImportWrapper: config?.autoImportWrapper ?? true,
+    ssg: config?.ssg ?? false,
+  }
+}
+
+function applyDemoAttributeDefaults(
+  attributes: AttributeMap,
+  options: ParseDemoAttributesOptions,
+) {
+  const normalized: AttributeMap = { ...attributes }
+
+  const rawSsg = normalized.ssg
+  if (typeof rawSsg === 'number')
+    normalized.ssg = Boolean(rawSsg)
+  else if (typeof rawSsg !== 'boolean' && typeof options.defaults?.ssg === 'boolean')
+    normalized.ssg = options.defaults.ssg
+
+  const rawCodeFold = normalized.codeFold
+  if (typeof rawCodeFold === 'number')
+    normalized.codeFold = Boolean(rawCodeFold)
+  else if (
+    rawCodeFold === undefined
+    && typeof options.defaults?.codeFold === 'boolean'
+  )
+    normalized.codeFold = options.defaults.codeFold
+
+  return normalized
+}
+
+function normalizeDemoAttributeKey(rawKey: string) {
+  const trimmed = rawKey.trim()
+  if (!trimmed)
+    return ''
+  if (!trimmed.includes('-'))
+    return trimmed
+  return trimmed.replace(/-([a-zA-Z0-9])/g, (_, char: string) => char.toUpperCase())
 }
 
 export function parseFilesAttribute(input: unknown): CodeFiles | undefined {

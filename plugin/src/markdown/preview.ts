@@ -10,6 +10,7 @@ import {
   escapeAttributeValue,
   injectComponentImportScript,
   isPlainObject,
+  normalizeDemoConfig,
   parseDemoAttributes,
   parseFilesAttribute,
 } from './utils'
@@ -25,21 +26,30 @@ import {
 export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any, config?: VitepressDemoBoxConfig) {
   const demoIndexKey = '__vp_demo_index__'
   const demoIndex = (mdFile[demoIndexKey] = (mdFile[demoIndexKey] || 0) + 1)
+
+  const normalizedConfig = normalizeDemoConfig(config)
   const {
     demoDir,
-    stackblitz = { show: false },
-    codesandbox = { show: false },
-    wrapperComponentName = 'vitepress-demo-box',
-    placeholderComponentName = 'vitepress-demo-placeholder',
-    autoImportWrapper = true,
-    ssg: configSsgValue = false,
+    stackblitz,
+    codesandbox,
+    wrapperComponentName,
+    placeholderComponentName,
+    autoImportWrapper,
+    ssg: configSsgValue,
+    codeFold: configCodeFold,
     codeMeta: configCodeMeta,
     vueMeta: configVueMeta,
     reactMeta: configReactMeta,
     htmlMeta: configHtmlMeta,
-  } = config || {}
+    locale: configLocale,
+  } = normalizedConfig
 
-  const attributes = parseDemoAttributes(token.content)
+  const attributes = parseDemoAttributes(token.content, {
+    defaults: {
+      ssg: configSsgValue,
+      codeFold: configCodeFold,
+    },
+  })
   const {
     vue: vuePathValue,
     html: htmlPathValue,
@@ -56,27 +66,8 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
     vueMeta: vueMetaAttr,
     reactMeta: reactMetaAttr,
     htmlMeta: htmlMetaAttr,
-    'code-meta': codeMetaAttrKebab,
-    'vue-meta': vueMetaAttrKebab,
-    'react-meta': reactMetaAttrKebab,
-    'html-meta': htmlMetaAttrKebab,
     ...restProps
   } = attributes
-
-  const resolvedProps: Record<string, unknown> = { ...restProps }
-  if ('code-fold' in resolvedProps && !('codeFold' in resolvedProps)) {
-    resolvedProps.codeFold = resolvedProps['code-fold']
-    delete resolvedProps['code-fold']
-  }
-  if (resolvedProps.codeFold === undefined && typeof config?.codeFold === 'boolean') {
-    resolvedProps.codeFold = config.codeFold
-  }
-
-  const ssgValue = typeof ssgAttr === 'boolean'
-    ? ssgAttr
-    : typeof ssgAttr === 'number'
-      ? Boolean(ssgAttr)
-      : configSsgValue
 
   const wrapperName = wrapperComponentNameValue || wrapperComponentName
   const placeholderName = placeholderComponentNameValue || placeholderComponentName
@@ -92,20 +83,19 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
     return value.trim()
   }
 
-  const resolvedCodeMeta = codeMetaAttrKebab ?? codeMetaAttr
   const resolveMetaByType = (type: 'vue' | 'react' | 'html') => {
     const attrMeta = type === 'vue'
-      ? vueMetaAttrKebab ?? vueMetaAttr
+      ? vueMetaAttr
       : type === 'react'
-        ? reactMetaAttrKebab ?? reactMetaAttr
-        : htmlMetaAttrKebab ?? htmlMetaAttr
+        ? reactMetaAttr
+        : htmlMetaAttr
     const configMeta = type === 'vue'
       ? configVueMeta
       : type === 'react'
         ? configReactMeta
         : configHtmlMeta
     return normalizeMeta(
-      attrMeta ?? resolvedCodeMeta ?? configMeta ?? configCodeMeta,
+      attrMeta ?? codeMetaAttr ?? configMeta ?? configCodeMeta,
     )
   }
 
@@ -152,7 +142,7 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
     .replace(/\\/g, '/')
 
   const componentAlias = composeComponentName(absolutePath)
-  const componentName = ssgValue ? `${componentAlias}Ssg` : componentAlias
+  const componentName = ssgAttr ? `${componentAlias}Ssg` : componentAlias
   const reactComponentName = `react${componentName}`
 
   // 启用自动导入包装组件
@@ -173,7 +163,7 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
       mdFile,
       componentVuePath,
       componentName,
-      ssgValue ? undefined : 'dynamicImport',
+      ssgAttr ? undefined : 'dynamicImport',
     )
   }
   if (componentReactPath) {
@@ -191,11 +181,11 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
       mdFile,
       componentReactPath,
       reactComponentName,
-      ssgValue ? undefined : 'dynamicImport',
+      ssgAttr ? undefined : 'dynamicImport',
     )
   }
 
-  const placeholderVisibleKey = ssgValue
+  const placeholderVisibleKey = ssgAttr
     ? null
     : `__placeholder_visible_${componentName}_${demoIndex}__`
 
@@ -424,8 +414,8 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
 
   // 国际化
   let locale = ''
-  if (isPlainObject(config?.locale)) {
-    locale = encodeURIComponent(JSON.stringify(config.locale))
+  if (isPlainObject(configLocale)) {
+    locale = encodeURIComponent(JSON.stringify(configLocale))
   }
 
   if (componentVuePath) {
@@ -469,8 +459,8 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
   const placeholderBlock = placeholderVisibleKey
     ? `<${placeholderName} v-show="${placeholderVisibleKey}" />`
     : ''
-  const clientOnlyOpen = ssgValue ? '' : '<ClientOnly>'
-  const clientOnlyClose = ssgValue ? '' : '</ClientOnly>'
+  const clientOnlyOpen = ssgAttr ? '' : '<ClientOnly>'
+  const clientOnlyClose = ssgAttr ? '' : '</ClientOnly>'
   const wrapperVisibilityAttr = placeholderVisibleKey
     ? `\n      v-show="!${placeholderVisibleKey}"`
     : ''
@@ -487,7 +477,7 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
   ${clientOnlyOpen}
     <${wrapperName}
       ${wrapperVisibilityAttr}
-      v-bind='${JSON.stringify(resolvedProps)}'
+      v-bind='${JSON.stringify(restProps)}'
       stackblitz="${encodeURIComponent(JSON.stringify(stackblitz))}"
       codesandbox="${encodeURIComponent(JSON.stringify(codesandbox))}"
       files="${encodeURIComponent(JSON.stringify(files))}"
