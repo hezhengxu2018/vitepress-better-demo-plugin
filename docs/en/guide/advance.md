@@ -159,6 +159,33 @@ export default defineConfig({
 });
 ```
 
+## Default Code Panel State
+
+The code panel is collapsed by default. Use `codeFold` to change the default state:
+
+### Per-demo
+
+```html
+<demo vue="demo.vue" :codeFold="false" />
+```
+
+### Global Configuration
+
+```ts
+import { defineConfig } from 'vitepress';
+import { vitepressDemoPlugin } from 'vitepress-better-demo-plugin';
+
+export default defineConfig({
+  markdown: {
+    config(md) {
+      md.use(vitepressDemoPlugin, {
+        codeFold: false, // [!code ++]
+      });
+    },
+  },
+});
+```
+
 ## Display Multiple Files Code
 
 ### Array

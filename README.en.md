@@ -154,6 +154,7 @@ See `docs/components/` for Ant Design and Element Plus walkthroughs.
 
 - `demoDir` – shorten relative paths.
 - `background` – set container background color.
+- `codeFold` – default collapsed/expanded state of the code panel.
 - `order` / `select` – control tab order and default selection per demo or globally via `tabs`.
 - `github` / `gitlab` – display CTA buttons.
 - `vueFiles` / `reactFiles` / `htmlFiles` – show multiple files (arrays or maps).

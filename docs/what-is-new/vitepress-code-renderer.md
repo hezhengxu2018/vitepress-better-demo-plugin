@@ -37,4 +37,4 @@ export default defineConfig({
 <demo react="demo.tsx" code-meta="twoslash" />
 ```
 
-<demo vue="demo.vue" vue-meta="twoslash" />
+<demo vue="demo.vue" vue-meta="twoslash" :codeFold="false" />

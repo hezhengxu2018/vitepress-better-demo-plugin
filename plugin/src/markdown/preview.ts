@@ -63,6 +63,15 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
     ...restProps
   } = attributes
 
+  const resolvedProps: Record<string, unknown> = { ...restProps }
+  if ('code-fold' in resolvedProps && !('codeFold' in resolvedProps)) {
+    resolvedProps.codeFold = resolvedProps['code-fold']
+    delete resolvedProps['code-fold']
+  }
+  if (resolvedProps.codeFold === undefined && typeof config?.codeFold === 'boolean') {
+    resolvedProps.codeFold = config.codeFold
+  }
+
   const ssgValue = typeof ssgAttr === 'boolean'
     ? ssgAttr
     : typeof ssgAttr === 'number'
@@ -478,7 +487,7 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
   ${clientOnlyOpen}
     <${wrapperName}
       ${wrapperVisibilityAttr}
-      v-bind='${JSON.stringify(restProps)}'
+      v-bind='${JSON.stringify(resolvedProps)}'
       stackblitz="${encodeURIComponent(JSON.stringify(stackblitz))}"
       codesandbox="${encodeURIComponent(JSON.stringify(codesandbox))}"
       files="${encodeURIComponent(JSON.stringify(files))}"

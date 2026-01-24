@@ -58,6 +58,7 @@ export interface VitepressDemoBoxProps {
   locale?: string
   htmlWriteWay?: 'write' | 'srcdoc'
   background?: string
+  codeFold?: boolean
 }
 
 export interface DefaultProps {
@@ -114,6 +115,10 @@ export interface VitepressDemoBoxConfig {
    * @en The configuration of the code switch tab
    */
   tab?: TabConfig
+  /**
+   * @en Whether to fold the code panel by default
+   */
+  codeFold?: boolean
   /**
    * @cn stackblitz 平台配置
    * @en The configuration of the stackblitz platform

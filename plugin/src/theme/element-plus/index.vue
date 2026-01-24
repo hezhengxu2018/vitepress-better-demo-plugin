@@ -25,6 +25,7 @@ const props = withDefaults(defineProps<VitepressDemoBoxProps>(), {
   htmlWriteWay: 'write',
   scope: '',
   codeHighlights: '',
+  codeFold: true,
 })
 
 const emit = defineEmits(['mount'])

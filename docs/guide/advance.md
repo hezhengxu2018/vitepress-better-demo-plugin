@@ -159,6 +159,33 @@ export default defineConfig({
 });
 ```
 
+## 默认展开/收起代码
+
+默认情况下代码区是收起的。如果希望默认展开代码区，可以通过 `codeFold` 配置控制：
+
+### 局部配置
+
+```html
+<demo vue="demo.vue" :codeFold="false" />
+```
+
+### 全局配置
+
+```ts
+import { defineConfig } from 'vitepress';
+import { vitepressDemoPlugin } from 'vitepress-better-demo-plugin';
+
+export default defineConfig({
+  markdown: {
+    config(md) {
+      md.use(vitepressDemoPlugin, {
+        codeFold: false, // [!code ++]
+      });
+    },
+  },
+});
+```
+
 ## 展示多文件代码
 
 ### 数组方式

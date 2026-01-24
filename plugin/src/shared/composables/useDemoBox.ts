@@ -83,7 +83,7 @@ export function useDemoBox(
     return props.order.split(',').map((item: string) => item.trim())
   })
 
-  const { isCodeFold, setCodeFold } = useCodeFold()
+  const { isCodeFold, setCodeFold } = useCodeFold(props.codeFold)
   const { clickCopy } = useCodeCopy()
 
   const currentCode = computed(() => {

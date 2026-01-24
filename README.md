@@ -154,6 +154,7 @@ pnpm add vitepress-better-demo-plugin -D
 
 - `demoDir`：统一缩短路径。
 - `background`：设置容器背景色。
+- `codeFold`：默认是否收起代码区域。
 - `order` / `select`：控制 Tab 顺序与默认激活，可在单个 Demo 或 `tabs` 中统一配置。
 - `github` / `gitlab`：放置仓库 CTA 按钮。
 - `vueFiles` / `reactFiles` / `htmlFiles`：展示多文件，可用数组或命名对象。
