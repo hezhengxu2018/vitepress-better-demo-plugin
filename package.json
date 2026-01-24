@@ -6,6 +6,7 @@
   "description": "vitepress-better-demo-plugin monorepo.",
   "author": "Hezhengxu",
   "license": "MIT",
+  "homepage": "https://vitepress-better-demo-plugin.silver-fe.dev",
   "scripts": {
     "dev": "pnpm -C ./docs docs:dev",
     "build": "pnpm -r build",
