@@ -98,7 +98,7 @@ function handleSourceAfterLeave() {
           </ElRadioGroup>
         </div>
         <div :class="[ns.bem('operation-area-wrapper', 'handle-btn-op-bar')]">
-          <ElTooltip v-if="stackblitz.show" :content="i18n.openInStackblitz">
+          <ElTooltip v-if="stackblitz.show" :content="i18n.openInStackblitz" :teleported="false">
             <ElIcon :class="ns.bem('operation-area-wrapper', 'handle-btn')">
               <StackblitzIcon
                 :code="currentCode"
@@ -108,7 +108,7 @@ function handleSourceAfterLeave() {
               />
             </ElIcon>
           </ElTooltip>
-          <ElTooltip v-if="codesandbox.show" :content="i18n.openInCodeSandbox">
+          <ElTooltip v-if="codesandbox.show" :content="i18n.openInCodeSandbox" :teleported="false">
             <ElIcon :class="ns.bem('operation-area-wrapper', 'handle-btn')">
               <CodeSandboxIcon
                 :code="currentCode"
@@ -118,22 +118,22 @@ function handleSourceAfterLeave() {
               />
             </ElIcon>
           </ElTooltip>
-          <ElTooltip v-if="github" :content="i18n.openInGithub">
+          <ElTooltip v-if="github" :content="i18n.openInGithub" :teleported="false">
             <ElIcon :class="ns.bem('operation-area-wrapper', 'handle-btn')">
               <GithubIcon @click="openGithub" />
             </ElIcon>
           </ElTooltip>
-          <ElTooltip v-if="gitlab" :content="i18n.openInGitlab">
+          <ElTooltip v-if="gitlab" :content="i18n.openInGitlab" :teleported="false">
             <ElIcon :class="ns.bem('operation-area-wrapper', 'handle-btn')">
               <GitlabIcon @click="openGitlab" />
             </ElIcon>
           </ElTooltip>
-          <ElTooltip :content="i18n.copyCode">
+          <ElTooltip :content="i18n.copyCode" :teleported="false">
             <ElIcon :class="ns.bem('operation-area-wrapper', 'handle-btn')">
               <CopyIcon @click="clickCodeCopy" />
             </ElIcon>
           </ElTooltip>
-          <ElTooltip :content="i18n.expandCode">
+          <ElTooltip :content="i18n.expandCode" :teleported="false">
             <ElIcon :class="ns.bem('operation-area-wrapper', 'handle-btn')">
               <CodeOpenIcon @click="setCodeFold(!isCodeFold)" />
             </ElIcon>
