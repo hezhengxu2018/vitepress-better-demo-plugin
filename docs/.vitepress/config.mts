@@ -113,6 +113,10 @@ export default defineConfig({
           { text: 'Markdown-It-Container 支持', link: '/what-is-new/markdown-it-container-support' },
         ],
       },
+      {
+        text: '故障排查',
+        link: '/guide/troubleshooting',
+      },
     ],
 
     outline: [2, 4],
@@ -162,6 +166,10 @@ export default defineConfig({
               { text: 'Build Your Own Wrapper', link: '/en/what-is-new/develop-your-own-wrapper' },
               { text: 'markdown-it-container Support', link: '/en/what-is-new/markdown-it-container-support' },
             ],
+          },
+          {
+            text: 'Troubleshooting',
+            link: '/en/guide/troubleshooting',
           },
         ],
         outline: [2, 4],
