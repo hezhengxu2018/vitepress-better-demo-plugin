@@ -113,6 +113,12 @@ importers:
       element-plus:
         specifier: ^2.2.0
         version: 2.11.7(vue@3.5.24(typescript@5.9.3))
+      entities:
+        specifier: ^4.5.0
+        version: 4.5.0
+      json5:
+        specifier: ^2.2.3
+        version: 2.2.3
       vitepress:
         specifier: '*'
         version: 1.6.4(@algolia/client-search@5.43.0)(@types/node@20.19.25)(async-validator@4.2.5)(change-case@5.4.4)(postcss@8.5.6)(sass-embedded@1.93.3)(sass@1.93.3)(search-insights@2.17.3)(typescript@5.9.3)
@@ -3648,6 +3654,11 @@ packages:
 
   json2mq@0.2.0:
     resolution: {integrity: sha512-SzoRg7ux5DWTII9J2qkrZrqV1gt+rTaoufMxEzXbS26Uid0NwaJd123HcoB80TgubEppxxIGdNxCx50fEoEWQA==}
+
+  json5@2.2.3:
+    resolution: {integrity: sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==}
+    engines: {node: '>=6'}
+    hasBin: true
 
   jsonc-eslint-parser@2.4.1:
     resolution: {integrity: sha512-uuPNLJkKN8NXAlZlQ6kmUF9qO+T6Kyd7oV4+/7yy8Jz6+MZNyhPq8EdLpdfnPVzUC8qSf1b4j1azKaGnFsjmsw==}
@@ -9530,6 +9541,8 @@ snapshots:
   json2mq@0.2.0:
     dependencies:
       string-convert: 0.2.1
+
+  json5@2.2.3: {}
 
   jsonc-eslint-parser@2.4.1:
     dependencies:

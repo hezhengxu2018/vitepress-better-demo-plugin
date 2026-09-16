@@ -11,9 +11,9 @@ npm i antd
 ## Display Demo
 
 ```html
-<demo react="antd.tsx" stackblitz="true" codesandbox="true" />
+<demo react="antd.tsx" :stackblitz="true" :codesandbox="true" />
 ```
 
 The rendering result is as follows:
 
-<demo react="antd.tsx" stackblitz="true" codesandbox="true" />
+<demo react="antd.tsx" :stackblitz="true" :codesandbox="true" />

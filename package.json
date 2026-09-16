@@ -15,7 +15,8 @@
     "lint": "eslint --fix",
     "commit": "czg",
     "lint-staged": "lint-staged",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:markdown": "pnpm -C plugin build:plugin && node --test docs/tests/demo-parser.test.mjs"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^6.2.0",

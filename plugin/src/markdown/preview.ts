@@ -1,37 +1,35 @@
-import type Token from 'markdown-it/lib/token'
 import type { MarkdownRenderer } from 'vitepress'
-import type { CodeFiles, VitepressDemoBoxConfig } from '@/types'
+import type { DemoDefinition } from './parsers/definition'
+import type { VitepressDemoBoxConfig } from '@/types'
 import { Buffer } from 'node:buffer'
 import fs from 'node:fs'
 import path from 'node:path'
+import { demoError } from './parsers/definition'
 import {
-  applyPlatformValue,
   composeComponentName,
   escapeAttributeValue,
   injectComponentImportScript,
   isPlainObject,
   normalizeDemoConfig,
-  parseDemoAttributes,
-  parseFilesAttribute,
 } from './utils'
 
 /**
  * 编译预览组件
  * @param md
- * @param token
+ * @param definition
  * @param mdFile
  * @param config
  * @return string
  */
-export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any, config?: VitepressDemoBoxConfig) {
+export function transformPreview(md: MarkdownRenderer, definition: DemoDefinition, mdFile: any, config?: VitepressDemoBoxConfig) {
   const demoIndexKey = '__vp_demo_index__'
   const demoIndex = (mdFile[demoIndexKey] = (mdFile[demoIndexKey] || 0) + 1)
 
   const normalizedConfig = normalizeDemoConfig(config)
   const {
     demoDir,
-    stackblitz,
-    codesandbox,
+    stackblitz: stackblitzConfig,
+    codesandbox: codesandboxConfig,
     wrapperComponentName,
     placeholderComponentName,
     autoImportWrapper,
@@ -44,38 +42,36 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
     locale: configLocale,
   } = normalizedConfig
 
-  const attributes = parseDemoAttributes(token.content, {
-    defaults: {
-      ssg: configSsgValue,
-      codeFold: configCodeFold,
-    },
-  })
+  const { vue: vuePathValue, html: htmlPathValue, react: reactPathValue } = definition.entries
+  const ssgAttr = definition.ssg ?? configSsgValue
   const {
-    vue: vuePathValue,
-    html: htmlPathValue,
-    react: reactPathValue,
-    stackblitz: stackblitzAttr,
-    codesandbox: codesandboxAttr,
-    vueFiles: vueFilesAttr,
-    reactFiles: reactFilesAttr,
-    htmlFiles: htmlFilesAttr,
-    wrapperComponentName: wrapperComponentNameValue,
-    placeholderComponentName: placeholderComponentNameValue,
-    ssg: ssgAttr,
     codeMeta: codeMetaAttr,
     vueMeta: vueMetaAttr,
     reactMeta: reactMetaAttr,
     htmlMeta: htmlMetaAttr,
     ...restProps
-  } = attributes
-
-  const wrapperName = wrapperComponentNameValue || wrapperComponentName
-  const placeholderName = placeholderComponentNameValue || placeholderComponentName
+  } = definition.props
+  if (restProps.codeFold === undefined && configCodeFold !== undefined)
+    restProps.codeFold = configCodeFold
+  const wrapperName = definition.wrapperComponentName || wrapperComponentName
+  const placeholderName = definition.placeholderComponentName || placeholderComponentName
   const mdFilePath = mdFile.realPath ?? mdFile.path
   const dirPath = demoDir || path.dirname(mdFilePath)
+  const mergePlatform = (defaults: typeof stackblitzConfig, value: DemoDefinition['platforms']['stackblitz']) => ({
+    ...defaults,
+    ...(typeof value === 'boolean' ? { show: value } : value),
+  })
+  const stackblitz = mergePlatform(stackblitzConfig, definition.platforms.stackblitz)
+  const codesandbox = mergePlatform(codesandboxConfig, definition.platforms.codesandbox)
 
-  applyPlatformValue(stackblitz, stackblitzAttr)
-  applyPlatformValue(codesandbox, codesandboxAttr)
+  const readSource = (absolutePath: string, attribute: string) => {
+    try {
+      return fs.readFileSync(absolutePath, 'utf-8')
+    }
+    catch (error) {
+      return demoError(definition.locations[attribute] || definition.location, attribute, `Cannot read file "${absolutePath}": ${(error as Error).message}`)
+    }
+  }
 
   const normalizeMeta = (value: unknown) => {
     if (typeof value !== 'string')
@@ -233,9 +229,9 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
 
   // 多文件展示
   const files = {
-    vue: {} as Record<string, { code: string, filename: string, html?: string, htmlDomKey?: string }>,
-    react: {} as Record<string, { code: string, filename: string, html?: string, htmlDomKey?: string }>,
-    html: {} as Record<string, { code: string, filename: string, html?: string, htmlDomKey?: string }>,
+    vue: Object.create(null) as Record<string, { code: string, filename: string, html?: string, htmlDomKey?: string }>,
+    react: Object.create(null) as Record<string, { code: string, filename: string, html?: string, htmlDomKey?: string }>,
+    html: Object.create(null) as Record<string, { code: string, filename: string, html?: string, htmlDomKey?: string }>,
   }
 
   const highlightedCode: Record<'vue' | 'react' | 'html', string> = {
@@ -314,36 +310,10 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
   ) => {
     if (!absPath)
       return
-    try {
-      if (!fs.existsSync(absPath))
-        return
-      let source = ''
-      try {
-        source = fs.readFileSync(absPath, 'utf-8')
-      }
-      catch (_e) {
-        source = ''
-      }
-      if (!source) {
-        highlightedCode[type] = ''
-        return
-      }
-      highlightedCode[type] = renderHighlightedCode(
-        source,
-        resolveLangByFile(absPath),
-        metaByType[type],
-      )
-    }
-    catch (_error) {
-      highlightedCode[type] = ''
-    }
+    highlightedCode[type] = renderHighlightedCode(readSource(absPath, type), resolveLangByFile(absPath), metaByType[type])
   }
 
-  const inputFiles: Record<'vue' | 'react' | 'html', CodeFiles | undefined> = {
-    vue: parseFilesAttribute(vueFilesAttr),
-    react: parseFilesAttribute(reactFilesAttr),
-    html: parseFilesAttribute(htmlFilesAttr),
-  }
+  const inputFiles = definition.files
 
   for (const key of Object.keys(inputFiles) as Array<'vue' | 'react' | 'html'>) {
     const value = inputFiles[key]
@@ -368,47 +338,14 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
     }
     for (const file in files[key]) {
       const filePath = files[key][file].filename
-      if (filePath) {
-        const absPath = path
-          .resolve(demoDir || path.dirname(mdFilePath), filePath || '.')
-          .replace(/\\/g, '/')
-        if (fs.existsSync(absPath)) {
-          let code = ''
-          try {
-            code = fs.readFileSync(absPath, 'utf-8')
-          }
-          catch (_e) {
-            code = ''
-          }
-          if (!code) {
-            delete files[key][file]
-          }
-          else {
-            files[key][file].code = code
-            const highlighted = renderHighlightedCode(
-              code,
-              resolveLangByFile(filePath),
-              metaByType[key],
-            )
-            files[key][file].html = highlighted
-            const domKey = isTwoslashMeta(metaByType[key])
-              ? ''
-              : registerHighlightDom(
-                  key,
-                  highlighted,
-                  file,
-                )
-            if (domKey)
-              files[key][file].htmlDomKey = domKey
-          }
-        }
-        else {
-          delete files[key][file]
-        }
-      }
-      else {
-        delete files[key][file]
-      }
+      const absPath = path.resolve(dirPath, filePath).replace(/\\/g, '/')
+      const code = readSource(absPath, `${key}Files`)
+      files[key][file].code = code
+      const highlighted = renderHighlightedCode(code, resolveLangByFile(filePath), metaByType[key])
+      files[key][file].html = highlighted
+      const domKey = isTwoslashMeta(metaByType[key]) ? '' : registerHighlightDom(key, highlighted, file)
+      if (domKey)
+        files[key][file].htmlDomKey = domKey
     }
   }
 
@@ -477,7 +414,7 @@ export function transformPreview(md: MarkdownRenderer, token: Token, mdFile: any
   ${clientOnlyOpen}
     <${wrapperName}
       ${wrapperVisibilityAttr}
-      v-bind='${JSON.stringify(restProps)}'
+      v-bind="${escapeAttributeValue(JSON.stringify(restProps))}"
       stackblitz="${encodeURIComponent(JSON.stringify(stackblitz))}"
       codesandbox="${encodeURIComponent(JSON.stringify(codesandbox))}"
       files="${encodeURIComponent(JSON.stringify(files))}"

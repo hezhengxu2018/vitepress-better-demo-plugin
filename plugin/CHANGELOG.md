@@ -1,5 +1,12 @@
 # 更新日志
 
+## Unreleased
+
+- 分离 HTML demo 与 Markdown 容器解析，支持多行字面量配置，修复多文件 tab 和 Markdown 特殊字符丢失问题。
+- **行为变更：** 非法绑定表达式、错误属性类型及不存在或不可读的 demo/源码文件现在会终止构建，并报告源文件位置。平台开关请使用 `:stackblitz="true"` / `:codesandbox="true"`，而非字符串属性。
+- Split HTML and container parsing; preserve multiline literals, source tabs and Markdown punctuation. Invalid configuration and missing/unreadable source files now fail the build with source locations. Use bound booleans for platform switches.
+
+
 
 
 ## [0.6.2](/compare/v0.6.1...v0.6.2) (2026-01-25)

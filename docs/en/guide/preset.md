@@ -13,12 +13,12 @@ This section of the documentation is identical to `vitepress-demo-plugin`.
 Add the `stackblitz/codesandbox` attribute in the `<demo />` component to take effect on a single `<demo />` component. For example:
 
 ```html
-<demo vue="../demos/demo.vue" stackblitz="true" codesandbox="true" />
+<demo vue="../demos/demo.vue" :stackblitz="true" :codesandbox="true" />
 ```
 
 The rendering effect is as follows:
 
-<demo vue="../demos/demo.vue" stackblitz="true" codesandbox="true" />
+<demo vue="../demos/demo.vue" :stackblitz="true" :codesandbox="true" />
 
 ### Global
 

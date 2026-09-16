@@ -4,16 +4,13 @@ import type {
   MarkdownRule,
   VitepressDemoBoxConfig,
 } from '@/types'
+import { installContainerSourceCapture, readContainerDemo } from './parsers/container'
+import { demoTag, renderHtmlDemos } from './parsers/html'
 import { transformPreview } from './preview'
-import {
-  collectDemoAttributeLines,
-  DEMO_ATTR_PLACEHOLDER,
-  demoReg,
-  escapeAttributeValue,
-  extractContainerDescription,
-  hasDescriptionAttr,
-  normalizeDemoAttributeLines,
-} from './utils'
+
+function sourceLocation(token: Token, env: any) {
+  return { file: env.realPath ?? env.path ?? '<markdown>', line: token.map ? token.map[0] + 1 : undefined }
+}
 
 const ENCODED_MARKDOWN_ASYNC_PLACEHOLDER_RE
   = /%3Cpre%3E%3C!--%3A%3Amarkdown-it-async%3A%3A(\w+)%3A%3A--%3E%3Ccode%3E[\s\S]*?%3C%2Fcode%3E%3C%2Fpre%3E/g
@@ -38,8 +35,8 @@ export function vitepressDemoPlugin(md: MarkdownRenderer, params?: VitepressDemo
     const token = tokens[idx]
     // 删除注释使注释的 demo 不生效
     token.content = token.content.replace(/<!--[\s\S]*?-->/g, '')
-    if (demoReg.some(reg => reg.test(token.content))) {
-      return transformPreview(md, token, mdFile, params)
+    if (demoTag.test(token.content)) {
+      return renderHtmlDemos(token.content, sourceLocation(token, mdFile), definition => transformPreview(md, definition, mdFile, params))
     }
     return defaultHtmlInlineRender(tokens, idx, options, mdFile, self)
   }
@@ -50,8 +47,8 @@ export function vitepressDemoPlugin(md: MarkdownRenderer, params?: VitepressDemo
     const token = tokens[idx]
     // 删除注释使注释的 demo 不生效
     token.content = token.content.replace(/<!--[\s\S]*?-->/g, '')
-    if (demoReg.some(reg => reg.test(token.content))) {
-      return transformPreview(md, token, mdFile, params)
+    if (demoTag.test(token.content)) {
+      return renderHtmlDemos(token.content, sourceLocation(token, mdFile), definition => transformPreview(md, definition, mdFile, params))
     }
     return defaultHtmlBlockRender(tokens, idx, options, mdFile, self)
   }
@@ -74,40 +71,17 @@ interface ContainerOptions {
 }
 
 export function createDemoContainer(md: MarkdownRenderer, pluginConfig?: VitepressDemoBoxConfig): ContainerOptions {
-  if (!md.renderer.rules[DEMO_ATTR_PLACEHOLDER])
-    md.renderer.rules[DEMO_ATTR_PLACEHOLDER] = () => ''
+  installContainerSourceCapture(md)
   return {
     validate(params) {
-      return !!/^demo.*$/.test(params.trim())
+      return /^demo(?:\s|$)/.test(params.trim())
     },
-
     render(tokens, idx, _options, env) {
-      if (tokens[idx].nesting === 1 /* means the tag is opening */) {
-        const attributeLines = normalizeDemoAttributeLines(
-          collectDemoAttributeLines(tokens, idx),
-        )
-        const descriptionFromInfo = extractContainerDescription(
-          tokens[idx].info,
-        )
-        if (descriptionFromInfo && !hasDescriptionAttr(attributeLines)) {
-          attributeLines.push(
-            `description="${escapeAttributeValue(descriptionFromInfo)}"`,
-          )
-        }
-        const attrs = attributeLines.length ? ` ${attributeLines.join(' ')}` : ''
-        const token = tokens[idx]
-        const previousContent = token.content
-        token.content = `<demo${attrs} />`
-        try {
-          return transformPreview(md, token, env, pluginConfig)
-        }
-        finally {
-          token.content = previousContent
-        }
-      }
-      return ''
+      if (tokens[idx].nesting !== 1)
+        return ''
+      const definition = readContainerDemo(tokens, idx, sourceLocation(tokens[idx], env))
+      return transformPreview(md, definition, env, pluginConfig)
     },
-
   }
 }
 
