@@ -2,6 +2,13 @@
 
 
 
+# [0.7.0](/compare/v0.6.3...v0.7.0) (2026-09-16)
+
+
+### Features
+
+* markdown-it-container写法支持react的缩写 88a1244
+
 ## [0.6.3](/compare/v0.6.2...v0.6.3) (2026-09-16)
 
 
