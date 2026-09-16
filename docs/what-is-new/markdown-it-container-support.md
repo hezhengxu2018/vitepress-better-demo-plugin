@@ -58,7 +58,17 @@ vue "../demos/demo.vue"
 :::
 ```
 
-仅会对vue的demo做这样的简化，一方面是与element-plus文档的写法对齐，另外一方面是Vue类型的demo展示应该是本插件的主要应用场景。
+React TSX 示例也支持首行路径简写，保留 `.tsx` 扩展名即可，等价于 `react="../demos/demo.tsx"`。不带扩展名的路径仍默认补全 `.vue`。
+
+```md
+::: demo
+../demos/demo.tsx
+:::
+```
+
+::: demo
+../demos/demo.tsx
+:::
 
 ::: demo
 ../demos/demo
@@ -94,7 +104,7 @@ vue "../demos/demo.vue"
 - `:prop` 与 `v-bind:prop` 接受 JSON5 字面量：字符串、数字、布尔值、数组、对象、`null`，并额外支持 `undefined`。支持单/双引号、转义字符和尾逗号，数组和对象可以跨行；不支持页面变量、函数调用或其他 JavaScript 表达式。
 - 除布尔开关外，不带绑定前缀的属性保持字符串；`vueFiles` / `reactFiles` / `htmlFiles` 也接受字符串形式的数组或对象，文件路径必须是非空字符串。
 - 容器中的下划线、星号、链接样式文本及 `&quot;` 均按原文处理。只有 `<demo>` HTML 写法会解码 HTML 实体。
-- 重复属性以后者为准。显式 `vue` 优先于首行简写，显式 `description` 优先于容器标题，空字符串也会覆盖标题。
+- 重复属性以后者为准。显式 `vue` / `react` 优先于对应类型的首行简写，显式 `description` 优先于容器标题，空字符串也会覆盖标题。
 - 所有文件路径相对 `demoDir`；没有配置时相对当前 Markdown 文件。空源码文件仍保留 tab。
 
 ## 错误提示与升级说明

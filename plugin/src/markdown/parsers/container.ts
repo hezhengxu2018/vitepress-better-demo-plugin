@@ -57,10 +57,12 @@ export function parseContainerDemo(source: string, info: string, location: Sourc
   scanner.skipWhitespace()
   const firstStart = scanner.pos
   const firstLine = source.slice(firstStart).split('\n')[0].trim()
-  // Only the first non-empty line can be a shorthand Vue entry.
+  // Only the first non-empty line can be a shorthand entry; extensionless paths default to Vue.
   if (firstLine && !/^(?::|v-bind:)?[A-Z_][\w:-]*(?:\s*=|\s+\S)/i.test(firstLine)) {
     const raw = firstLine.replace(/^(['"])(.*)\1$/, '$2')
-    attributes.push({ name: 'vue', rawValue: raw.endsWith('.vue') ? raw : `${raw}.vue`, bound: false, location: scanner.locationAt() })
+    const name = raw.endsWith('.tsx') ? 'react' : 'vue'
+    const rawValue = name === 'react' || raw.endsWith('.vue') ? raw : `${raw}.vue`
+    attributes.push({ name, rawValue, bound: false, location: scanner.locationAt() })
     scanner.pos += firstLine.length
   }
   while (scanner.pos < source.length) {

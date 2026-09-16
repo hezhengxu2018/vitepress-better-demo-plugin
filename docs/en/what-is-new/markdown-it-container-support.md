@@ -58,7 +58,17 @@ The plugin aligns with the element-plus documentation. If the first line inside 
 :::
 ```
 
-This simplification only applies to Vue demos. It matches the element-plus convention and optimizes for the most common use case of this plugin.
+React TSX demos also support a shorthand path on the first line. Keep the `.tsx` extension; this is equivalent to `react="../demos/demo.tsx"`. Paths without an extension still default to `.vue`.
+
+```md
+::: demo
+../demos/demo.tsx
+:::
+```
+
+::: demo
+../demos/demo.tsx
+:::
 
 ## Multiple files and structured attributes
 
@@ -90,7 +100,7 @@ The first path (or the `vue` attribute) selects the preview component. `vueFiles
 - `:prop` and `v-bind:prop` accept JSON5 literals: strings, numbers, booleans, arrays, objects and `null`, plus explicit `undefined`. Single/double quotes, escapes, trailing commas and multiline arrays/objects are supported. Page variables, function calls and other JavaScript expressions are not supported.
 - Unbound attributes remain strings, except for boolean switches. `vueFiles` / `reactFiles` / `htmlFiles` also accept string representations of arrays or objects; each file path must be a non-empty string.
 - Underscores, asterisks, link-like text and `&quot;` remain literal in containers. Only HTML `<demo>` attributes decode HTML entities.
-- The last duplicate attribute wins. Explicit `vue` overrides the shorthand entry; explicit `description` overrides the container heading, including an empty string.
+- The last duplicate attribute wins. Explicit `vue` / `react` overrides the shorthand entry of the same type; explicit `description` overrides the container heading, including an empty string.
 - All paths resolve against `demoDir`, or the Markdown file's directory when it is unset. Empty source files retain their tabs.
 
 ## Errors and migration

@@ -13,7 +13,9 @@ const demoDir = path.join(root, 'en/demos')
 fs.mkdirSync(path.join(demoDir, 'query-form-item'), { recursive: true })
 const entry = 'query-form-item/transfer-clear-on-data-change.vue'
 const helper = 'query-form-item/mock-user-request.ts'
+const reactEntry = 'query-form-item/demo.tsx'
 const sources = {
+  [reactEntry]: 'export default function Demo() { return <div>React preview</div> }',
   [entry]: '<template><div>Preview</div></template>',
   [helper]: 'export const users = []',
   'empty.ts': '',
@@ -61,6 +63,23 @@ test('the reported input works with blank lines and relative file paths', () => 
   const result = render(block(`\nquery-form-item/transfer-clear-on-data-change\n\n:vueFiles="['../../en/demos/${entry}', '../../en/demos/${helper}']"\n`))
   assert.equal(Object.keys(result.files[0].vue).length, 2)
   assert.match(result.script, /transfer-clear-on-data-change.vue/)
+})
+
+test('TSX shorthand matches explicit React entries with quotes, blank lines and source tabs', () => {
+  const attributes = `:reactFiles="['${reactEntry}', '${helper}']"`
+  const explicit = render(`<demo react="${reactEntry}" ${attributes} />`)
+  for (const shorthand of [reactEntry, `'${reactEntry}'`, `"${reactEntry}"`]) {
+    const result = render(block(`\n${shorthand}\n\n${attributes}`))
+    assert.deepEqual(result, explicit)
+    assert.match(result.html, /:reactComponent=/)
+    assert.doesNotMatch(result.script, /\.tsx\.vue/)
+  }
+})
+
+test('explicit React entry overrides TSX shorthand and missing TSX reports React', () => {
+  const result = render(block(`missing.tsx\nreact="${reactEntry}"`))
+  assert.deepEqual(result, render(`<demo react="${reactEntry}" />`))
+  assert.throws(() => render(block('missing.tsx')), /\(react\).*missing\.tsx/)
 })
 
 test('space syntax, same-line attributes, object aliases and trailing commas', () => {
