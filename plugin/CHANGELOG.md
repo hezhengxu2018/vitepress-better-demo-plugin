@@ -1,5 +1,19 @@
 # 更新日志
 
+
+
+## [0.6.3](/compare/v0.6.2...v0.6.3) (2026-09-16)
+
+
+### Bug Fixes
+
+* 添加markdown-it-container对多文件的支持 7054513
+
+
+### BREAKING CHANGES
+
+* 现在的解析失败会直接抛错
+
 ## Unreleased
 
 - 分离 HTML demo 与 Markdown 容器解析，支持多行字面量配置，修复多文件 tab 和 Markdown 特殊字符丢失问题。
