@@ -10,7 +10,8 @@
     "release": true
   },
   "npm": {
-    "publish": true
+    "publish": true,
+    "publishArgs": ["--auth-type=web"]
   },
   "plugins": {
     "@release-it/conventional-changelog": {
