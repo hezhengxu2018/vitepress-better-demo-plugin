@@ -109,8 +109,8 @@ export function useDemoBox(
   const currentCodeHtml = computed(() => {
     if (currentFiles.value && currentFiles.value[activeFile.value]) {
       return (
-        currentFiles.value[activeFile.value].html
-        || fileDomHighlightHtml.value?.[type.value]?.[activeFile.value]
+        fileDomHighlightHtml.value?.[type.value]?.[activeFile.value]
+        || currentFiles.value[activeFile.value].html
         || ''
       )
     }

@@ -296,7 +296,7 @@ export function transformPreview(md: MarkdownRenderer, definition: DemoDefinitio
       return ''
     try {
       const info = buildFenceInfo(lang, meta)
-      const fencedCode = `\`\`\` ${info}\n${code}\n\`\`\``
+      const fencedCode = `\`\`\`${info}\n${code}\n\`\`\``
       return md.render(fencedCode)
     }
     catch (_error) {

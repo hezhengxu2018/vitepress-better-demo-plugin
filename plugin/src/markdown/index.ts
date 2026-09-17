@@ -27,6 +27,8 @@ type MarkdownItAsyncRenderer = MarkdownRenderer & {
   placeholderMap?: Map<string, MarkdownItAsyncPlaceholderEntry>
 }
 
+const enhancedAsyncRenderers = new WeakSet<MarkdownRenderer>()
+
 export function vitepressDemoPlugin(md: MarkdownRenderer, params?: VitepressDemoBoxConfig) {
   const defaultHtmlInlineRender = md.renderer.rules.html_inline!
   const defaultHtmlBlockRender = md.renderer.rules.html_block!
@@ -72,6 +74,7 @@ interface ContainerOptions {
 
 export function createDemoContainer(md: MarkdownRenderer, pluginConfig?: VitepressDemoBoxConfig): ContainerOptions {
   installContainerSourceCapture(md)
+  enhanceMarkdownItAsyncRenderer(md)
   return {
     validate(params) {
       return /^demo(?:\s|$)/.test(params.trim())
@@ -94,32 +97,39 @@ export { COMPONENT_TYPE } from '@/shared/constant'
 export { i18n } from '@/shared/locales/i18n'
 
 function enhanceMarkdownItAsyncRenderer(md: MarkdownRenderer) {
-  if (!isMarkdownItAsyncRenderer(md))
+  if (!isMarkdownItAsyncRenderer(md) || enhancedAsyncRenderers.has(md))
     return
+
+  enhancedAsyncRenderers.add(md)
 
   const asyncMd = md as MarkdownItAsyncRenderer
   const originalRenderAsync = asyncMd.renderAsync!.bind(asyncMd)
 
   asyncMd.renderAsync = async (...args) => {
-    let html = await originalRenderAsync(...args)
-    if (!asyncMd.placeholderMap?.size)
+    const pendingHtml = originalRenderAsync(...args)
+    // Upstream renders synchronously, then resolves and deletes raw DOM placeholders.
+    // Keep their promises for the encoded copies in our JSON props as well.
+    const placeholders = new Map(asyncMd.placeholderMap)
+    let html = await pendingHtml
+    if (!placeholders.size)
       return html
 
     html = await replaceAsync(
       html,
       ENCODED_MARKDOWN_ASYNC_PLACEHOLDER_RE,
-      async (_match, id: string) => {
-        if (!asyncMd.placeholderMap?.has(id))
-          return ''
+      async (match, id: string) => {
+        if (!placeholders.has(id))
+          return match
 
-        const [promise, _raw, lang] = asyncMd.placeholderMap.get(id)!
-        asyncMd.placeholderMap.delete(id)
+        const [promise, _raw, lang] = placeholders.get(id)!
 
         let resolved = await promise || ''
         if (!resolved.startsWith('<pre'))
           resolved = `<pre><code class="language-${lang}">${resolved}</code></pre>`
 
-        return encodeURIComponent(resolved)
+        asyncMd.placeholderMap?.delete(id)
+        // These placeholders are inside URI-encoded JSON string values.
+        return encodeURIComponent(JSON.stringify(resolved).slice(1, -1))
       },
     )
 

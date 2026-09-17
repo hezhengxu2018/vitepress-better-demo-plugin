@@ -5,7 +5,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { after, test } from 'node:test'
 import container from 'markdown-it-container'
-import { createMarkdownRenderer } from 'vitepress'
+import { createMarkdownRenderer, disposeMdItInstance } from 'vitepress'
 import { createDemoContainer, vitepressDemoPlugin } from 'vitepress-better-demo-plugin'
 
 const root = fs.mkdtempSync(path.join(os.tmpdir(), 'demo-parser-'))
@@ -241,7 +241,7 @@ test('upstream highlighting meta precedence and Twoslash slots are retained', as
   const configured = await renderer(false, { codeMeta: 'global', vueMeta: 'language' })
   const seen = []
   configured.renderer.rules.fence = (tokens, index) => {
-    seen.push(tokens[index].info.trim())
+    seen.push(tokens[index].info)
     return '<pre>highlighted</pre>'
   }
   render(block(entry), configured)
@@ -263,3 +263,70 @@ test('plugin aliases do not rewrite custom data and aria attributes', () => {
   assert.match(result.html, /&quot;data-label&quot;:&quot;123&quot;/)
   assert.match(result.html, /&quot;aria-label&quot;:&quot;Demo&quot;/)
 })
+
+// Model VitePress 2's async highlighter while keeping the VitePress 1 test fixture.
+async function asyncRenderer(registration, config = {}) {
+  disposeMdItInstance()
+  const md = await createMarkdownRenderer(root)
+  const highlight = md.options.highlight
+  let nextId = 0
+  md.placeholderMap = new Map()
+  md.options.highlight = (code, lang, attrs) => {
+    const id = String(++nextId)
+    md.placeholderMap.set(id, [Promise.resolve(highlight(code, lang, attrs)), code, lang, attrs])
+    return `<pre><!--::markdown-it-async::${id}::--><code>${md.utils.escapeHtml(code)}</code></pre>`
+  }
+  md.renderAsync = async (source, env) => {
+    const html = md.render(source, env)
+    const pattern = /<pre><!--::markdown-it-async::(\w+)::--><code>[\s\S]*?<\/code><\/pre>/g
+    const replacements = await Promise.all([...html.matchAll(pattern)].map(async ([, id]) => {
+      const [promise] = md.placeholderMap.get(id)
+      const result = await promise
+      md.placeholderMap.delete(id)
+      return result
+    }))
+    let index = 0
+    return html.replace(pattern, () => replacements[index++])
+  }
+  const options = { demoDir, autoImportWrapper: false, ...config }
+  for (const kind of registration) {
+    if (kind === 'container')
+      md.use(container, 'demo', createDemoContainer(md, options))
+    else
+      md.use(vitepressDemoPlugin, options)
+  }
+  return md
+}
+
+for (const registration of [['container'], ['html'], ['container', 'html'], ['html', 'container']]) {
+  for (const meta of ['', 'twoslash']) {
+    test(`async highlights survive JSON props: ${registration.join('+')}, meta=${meta}`, async () => {
+      const md = await asyncRenderer(registration, { vueMeta: meta })
+      const source = registration.includes('container')
+        ? block(`${entry}\n${filesAttr}`)
+        : `<demo vue="${entry}" ${filesAttr} />`
+      const render = () => md.renderAsync(`${source}\n\n${source}`, {
+        path: path.join(root, 'guide/example.md'),
+        sfcBlocks: { scripts: [] },
+      })
+      // Concurrent pages and repeated demos must each retain their own highlights.
+      const results = await Promise.all([render(), render()])
+      for (const html of results) {
+        assert.doesNotMatch(html, /markdown-it-async/)
+        const props = [...html.matchAll(/\s(files|codeHighlights)="([^"]+)"/g)]
+        assert.equal(props.length, 4)
+        for (const [, name, value] of props) {
+          const parsed = JSON.parse(decodeURIComponent(value))
+          const highlights = name === 'files'
+            ? Object.values(parsed.vue).map(file => file.html)
+            : [parsed.vue]
+          for (const highlighted of highlights) {
+            assert.match(highlighted, /<span[^>]*style=/)
+            assert.match(highlighted, /<pre/)
+          }
+        }
+      }
+      assert.equal(md.placeholderMap.size, 0)
+    })
+  }
+}
